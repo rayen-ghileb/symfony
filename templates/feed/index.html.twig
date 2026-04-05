@@ -227,21 +227,64 @@ body {
 .ss-vis-btn:hover  { background: var(--indigo-light); color: var(--indigo); }
 .ss-vis-btn.active { background: var(--indigo-light); border-color: var(--indigo); color: var(--indigo); }
 
-/* Media preview */
-.ss-media-preview {
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    padding: 10px;
-    display: none;
+/* Media upload grid */
+.ss-up-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 40px;
+    align-items: flex-start;
 }
-.ss-media-preview.show { display: block; }
-.ss-media-thumb {
-    width: 72px; height: 72px;
-    object-fit: cover;
+.ss-up-empty {
+    font-size: 13px;
+    color: var(--gray-400);
+    font-style: italic;
+    align-self: center;
+    padding: 4px 0;
+}
+.ss-up-thumb {
+    position: relative;
+    width: 80px; height: 80px;
     border-radius: var(--radius-xs);
-    border: 1.5px solid var(--gray-200);
+    overflow: hidden;
+    border: 1.5px solid var(--indigo-mid);
+    background: var(--indigo-light);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
 }
+.ss-up-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+}
+.ss-up-vid-icon { font-size: 22px; line-height: 1; }
+.ss-up-remove {
+    position: absolute; top: 4px; right: 4px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.50);
+    border: none; cursor: pointer;
+    color: #fff; font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0; line-height: 1;
+    transition: background 0.15s;
+}
+.ss-up-remove:hover { background: rgba(220,38,38,0.85); }
+.ss-up-add-btn {
+    width: 80px; height: 80px;
+    border-radius: var(--radius-xs);
+    border: 1.5px dashed var(--indigo-mid);
+    background: var(--indigo-light);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 3px; cursor: pointer;
+    color: var(--indigo); font-size: 22px;
+    transition: border-color 0.15s, background 0.15s;
+    flex-shrink: 0;
+    user-select: none;
+    font-weight: 700;
+}
+.ss-up-add-btn span.ss-up-add-label { font-size: 11px; font-weight: 600; }
+.ss-up-add-btn:hover { border-color: var(--indigo); background: #ddd6fe; }
 
 .ss-attach-btn {
     background: var(--gray-100);
@@ -374,23 +417,74 @@ body {
     white-space: pre-wrap;
 }
 
-/* Media grid */
+/* ── Facebook-style media grid ───────────────── */
 .ss-media-grid {
-    display: grid;
-    gap: 6px;
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 14px;
+    display: grid;
+    gap: 2px;
 }
-.ss-media-grid.one   { grid-template-columns: 1fr; }
-.ss-media-grid.two   { grid-template-columns: 1fr 1fr; }
-.ss-media-grid.three { grid-template-columns: 1fr 1fr 1fr; }
-.ss-media-grid img,
-.ss-media-grid video {
-    width: 100%; object-fit: cover;
-    border-radius: 10px;
-    max-height: 300px;
+.ss-media-grid.count-1 {
+    grid-template-columns: 1fr;
+}
+.ss-media-grid.count-1 .ss-media-cell {
+    height: 340px;
+}
+.ss-media-grid.count-2 {
+    grid-template-columns: 1fr 1fr;
+}
+.ss-media-grid.count-2 .ss-media-cell {
+    height: 250px;
+}
+.ss-media-grid.count-3 {
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 130px 130px;
+}
+.ss-media-grid.count-3 .ss-media-cell:first-child {
+    grid-row: 1 / 3;
+    height: 262px;
+}
+.ss-media-grid.count-3 .ss-media-cell:not(:first-child) {
+    height: 130px;
+}
+.ss-media-grid.count-4 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 175px 175px;
+}
+.ss-media-grid.count-4 .ss-media-cell {
+    height: 175px;
+}
+.ss-media-grid.count-5plus {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 180px 175px;
+}
+.ss-media-grid.count-5plus .ss-media-cell:first-child {
+    grid-column: 1 / 3;
+    height: 180px;
+}
+.ss-media-grid.count-5plus .ss-media-cell:not(:first-child) {
+    height: 175px;
+}
+.ss-media-cell {
+    position: relative;
+    overflow: hidden;
+    background: var(--gray-200);
     display: block;
+}
+.ss-media-cell img,
+.ss-media-cell video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.ss-media-more-overlay {
+    position: absolute; inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 700; color: #fff;
+    cursor: pointer;
+    letter-spacing: -1px;
 }
 
 /* ── Reactions Preview Row ─────────────────── */
@@ -820,14 +914,16 @@ body {
                 <div class="d-flex flex-wrap gap-2" id="mediaThumbs"></div>
             </div>
 
+{# Media upload grid #}
+            <div class="mb-3">
+                <div class="ss-up-grid" id="ss-up-grid"></div>
+            </div>
+            {# Hidden file picker — triggered by the + button #}
+            <input type="file" id="ss-up-input" style="display:none;"
+                   accept="image/*,video/*" multiple>
+
             {# Actions #}
-            <div class="d-flex justify-content-between align-items-center">
-                <label class="ss-attach-btn mb-0" style="cursor:pointer;">
-                    <i class="bi bi-camera-fill"></i> Add Media
-                    <input type="file" name="post[mediaFiles][]" id="mediaFilesInput"
-                           multiple accept="image/*,video/*" style="display:none;"
-                           onchange="previewMedia(this)">
-                </label>
+            <div class="d-flex justify-content-end align-items-center">
                 <button type="submit" class="ss-post-btn">Post</button>
             </div>
         </form>
@@ -921,16 +1017,33 @@ body {
                 <div class="ss-post-view" id="post-view-{{ post.id }}">
                     <div class="ss-post-content">{{ post.content }}</div>
 
-                    {# Media Gallery #}
+{# Media Gallery — Facebook-style layout #}
                     {% if post.mediaList is not empty %}
                         {% set mediaCount = post.mediaList|length %}
-                        <div class="ss-media-grid {{ mediaCount == 1 ? 'one' : (mediaCount == 2 ? 'two' : 'three') }} mb-3">
-                            {% for media in post.mediaList %}
-                                {% if media.mediaType == 'VIDEO' %}
-                                    <video controls><source src="{{ media.mediaUrl }}"></video>
-                                {% else %}
-                                    <img src="{{ media.mediaUrl }}" alt="Post media" loading="lazy">
-                                {% endif %}
+                        {% if mediaCount == 1 %}{% set gridClass = 'count-1' %}
+                        {% elseif mediaCount == 2 %}{% set gridClass = 'count-2' %}
+                        {% elseif mediaCount == 3 %}{% set gridClass = 'count-3' %}
+                        {% elseif mediaCount == 4 %}{% set gridClass = 'count-4' %}
+                        {% else %}{% set gridClass = 'count-5plus' %}
+                        {% endif %}
+
+                        {# For 5+: show first item full-width, then items 2–4, last cell gets +N overlay #}
+                        {% set displayList = mediaCount <= 4 ? post.mediaList : post.mediaList|slice(0, 4) %}
+                        {% set hiddenCount = mediaCount > 4 ? mediaCount - 4 : 0 %}
+
+                        <div class="ss-media-grid {{ gridClass }} mb-3">
+                            {% for media in displayList %}
+                                {% set isLast = loop.last and hiddenCount > 0 %}
+                                <div class="ss-media-cell">
+                                    {% if media.mediaType == 'VIDEO' %}
+                                        <video controls><source src="{{ media.mediaUrl }}"></video>
+                                    {% else %}
+                                        <img src="{{ media.mediaUrl }}" alt="Post media" loading="lazy">
+                                    {% endif %}
+                                    {% if isLast %}
+                                        <div class="ss-media-more-overlay">+{{ hiddenCount }}</div>
+                                    {% endif %}
+                                </div>
                             {% endfor %}
                         </div>
                     {% endif %}
@@ -1283,36 +1396,98 @@ document.querySelectorAll('.ss-confirm-overlay').forEach(el => {
     });
 });
 
-/* ── Media preview ── */
-function previewMedia(input) {
-    const preview = document.getElementById('mediaPreview');
-    const thumbs  = document.getElementById('mediaThumbs');
-    thumbs.innerHTML = '';
+/* ── Media upload manager ── */
+(function () {
+    const grid    = document.getElementById('ss-up-grid');
+    const trigger = document.getElementById('ss-up-input');
+    const form    = document.getElementById('createPostForm');
+    if (!grid || !trigger || !form) return;
 
-    if (input.files.length === 0) {
-        preview.classList.remove('show');
-        return;
+    let files = [];
+
+function syncInput() {
+        const old = form.querySelector('input.ss-real-files');
+        if (old) old.remove();
+
+        if (files.length === 0) return;
+
+        const dt = new DataTransfer();
+        files.forEach(f => dt.items.add(f));
+
+        const real = document.createElement('input');
+        real.type      = 'file';
+        real.name      = 'post[mediaFiles][]';
+        real.multiple  = true;
+        real.className = 'ss-real-files';
+        real.style.display = 'none';
+        form.appendChild(real);
+
+        // .files setter is the only way that actually works on submit
+        real.files = dt.files;
     }
-    preview.classList.add('show');
 
-    Array.from(input.files).forEach(file => {
-        const wrap = document.createElement('div');
-        wrap.style.cssText = 'position:relative;display:inline-block;';
+    function render() {
+        grid.innerHTML = '';
 
-        if (file.type.startsWith('image/')) {
-            const img = document.createElement('img');
-            img.src = URL.createObjectURL(file);
-            img.className = 'ss-media-thumb';
-            wrap.appendChild(img);
-        } else {
-            const icon = document.createElement('div');
-            icon.style.cssText = 'width:72px;height:72px;background:#f3f4f6;border-radius:8px;border:1.5px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:24px;';
-            icon.textContent = '🎥';
-            wrap.appendChild(icon);
+        if (files.length === 0) {
+            // Empty state + add button side by side
+            const empty = document.createElement('span');
+            empty.className = 'ss-up-empty';
+            empty.textContent = 'No media attached yet.';
+            grid.appendChild(empty);
         }
-        thumbs.appendChild(wrap);
+
+        files.forEach((file, i) => {
+            const thumb = document.createElement('div');
+            thumb.className = 'ss-up-thumb';
+
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                const url = URL.createObjectURL(file);
+                img.src = url;
+                img.onload = () => URL.revokeObjectURL(url);
+                thumb.appendChild(img);
+            } else {
+                const icon = document.createElement('span');
+                icon.className = 'ss-up-vid-icon';
+                icon.textContent = '🎬';
+                thumb.appendChild(icon);
+            }
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'ss-up-remove';
+            removeBtn.title = 'Remove';
+            removeBtn.innerHTML = '&#x2715;';
+            removeBtn.addEventListener('click', () => {
+                files.splice(i, 1);
+                render();
+                syncInput();
+            });
+            thumb.appendChild(removeBtn);
+            grid.appendChild(thumb);
+        });
+
+        // "+" add button — always rendered at the end
+        const addBtn = document.createElement('div');
+        addBtn.className = 'ss-up-add-btn';
+        addBtn.title = 'Add media';
+        addBtn.innerHTML = '<span>+</span><span class="ss-up-add-label">Add</span>';
+        addBtn.addEventListener('click', () => {
+            trigger.value = '';
+            trigger.click();
+        });
+        grid.appendChild(addBtn);
+    }
+
+    trigger.addEventListener('change', () => {
+        Array.from(trigger.files).forEach(f => files.push(f));
+        render();
+        syncInput();
     });
-}
+
+    render(); // initial state
+})();
 
 /* ── Search filter (client-side highlight) ── */
 document.getElementById('searchInput').addEventListener('input', function() {
