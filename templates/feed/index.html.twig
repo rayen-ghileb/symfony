@@ -1,480 +1,1326 @@
+{# templates/feed/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}My Feed - Safe Space{% endblock %}
+{% block title %}Feed — Safe Space{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* ══════════════════════════════════════════════
+   SafeSpace Feed — Twig port of JavaFX design
+   Indigo/violet theme · Segoe UI · Bootstrap 5.3
+══════════════════════════════════════════════ */
+
+:root {
+    --indigo:       #4f46e5;
+    --violet:       #7c3aed;
+    --indigo-light: #ede9fe;
+    --indigo-mid:   #c4b5fd;
+    --gray-50:  #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --green:  #10b981;
+    --amber:  #f59e0b;
+    --red:    #ef4444;
+    --red-bg: #fee2e2;
+    --radius-card: 16px;
+    --radius-sm:   10px;
+    --radius-xs:   8px;
+    --shadow-card: 0 2px 8px rgba(0,0,0,.05);
+    --shadow-card-hover: 0 4px 14px rgba(79,70,229,.10);
+    --shadow-btn:  0 3px 12px rgba(79,70,229,.4);
+}
+
+/* ── Base ─────────────────────────────────── */
+body {
+    background: var(--gray-100);
+    font-family: 'Segoe UI', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    color: var(--gray-800);
+}
+
+/* ── Navbar ───────────────────────────────── */
+.ss-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #fff;
+    border-bottom: 1px solid var(--gray-200);
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    padding: 0 24px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.ss-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+.ss-logo-icon { color: var(--indigo); font-size: 20px; }
+.ss-logo-text {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--indigo);
+    letter-spacing: -.3px;
+}
+.ss-search-wrap {
+    flex: 1;
+    max-width: 380px;
+    position: relative;
+}
+.ss-search-wrap .bi-search {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-400);
+    font-size: 13px;
+    pointer-events: none;
+}
+.ss-search {
+    width: 100%;
+    background: var(--gray-50);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 9px 14px 9px 38px;
+    font-size: 13.5px;
+    color: var(--gray-900);
+    transition: border-color .2s;
+    outline: none;
+}
+.ss-search::placeholder { color: var(--gray-400); }
+.ss-search:focus { border-color: var(--indigo-mid); background: #fff; }
+
+.ss-nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+.ss-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px; color: #fff;
+    cursor: pointer; flex-shrink: 0;
+    text-decoration: none;
+}
+.ss-avatar-patient      { background: var(--indigo); }
+.ss-avatar-psychiatrist { background: var(--green); }
+.ss-avatar-admin        { background: var(--amber); }
+
+.ss-nav-info { line-height: 1.2; }
+.ss-nav-name { font-weight: 700; font-size: 13.5px; color: var(--gray-900); }
+.ss-nav-role { font-size: 11px; font-weight: 600; }
+.ss-nav-role-patient      { color: var(--indigo); }
+.ss-nav-role-psychiatrist { color: var(--green); }
+.ss-nav-role-admin        { color: var(--amber); }
+
+.ss-home-btn {
+    width: 38px; height: 38px;
+    background: var(--gray-100);
+    border: none; border-radius: var(--radius-xs);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gray-500); cursor: pointer;
+    text-decoration: none;
+    transition: background .2s, color .2s;
+}
+.ss-home-btn:hover { background: var(--red-bg); color: var(--red); }
+
+/* ── Feed layout ──────────────────────────── */
+.ss-feed-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 28px 80px;
+    min-height: calc(100vh - 62px);
+}
+.ss-feed-inner {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ── Welcome Banner ───────────────────────── */
+.ss-welcome {
+    background: linear-gradient(to right, var(--indigo), var(--violet));
+    border-radius: var(--radius-card);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 16px rgba(79,70,229,.3);
+}
+.ss-welcome-title { font-size: 18px; font-weight: 700; color: #fff; }
+.ss-welcome-sub   { font-size: 13px; color: rgba(255,255,255,.75); }
+.ss-welcome-icon-wrap {
+    margin-left: auto;
+    width: 52px; height: 52px;
+    background: rgba(255,255,255,.15);
+    border: 1.5px solid rgba(255,255,255,.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+/* ── Create Post Card ─────────────────────── */
+.ss-card {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 20px;
+}
+.ss-card:hover { box-shadow: var(--shadow-card-hover); }
+
+.ss-create-avatar {
+    width: 42px; height: 42px;
+    background: var(--indigo-light);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--indigo);
+    font-size: 15px;
+    flex-shrink: 0;
+}
+.ss-textarea {
+    background: var(--gray-50);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--gray-900);
+    resize: none;
+    width: 100%;
+    transition: border-color .2s, background .2s;
+    outline: none;
+    font-family: inherit;
+}
+.ss-textarea::placeholder { color: var(--gray-400); }
+.ss-textarea:focus { border-color: var(--indigo); border-width: 2px; background: #fff; }
+
+/* Visibility toggles */
+.ss-vis-label { font-size: 12px; font-weight: 600; color: var(--gray-400); }
+.ss-vis-btn {
+    background: var(--gray-100);
+    border: 1.5px solid transparent;
+    border-radius: var(--radius-xs);
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-500);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all .2s;
+}
+.ss-vis-btn:hover  { background: var(--indigo-light); color: var(--indigo); }
+.ss-vis-btn.active { background: var(--indigo-light); border-color: var(--indigo); color: var(--indigo); }
+
+/* Media preview */
+.ss-media-preview {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    display: none;
+}
+.ss-media-preview.show { display: block; }
+.ss-media-thumb {
+    width: 72px; height: 72px;
+    object-fit: cover;
+    border-radius: var(--radius-xs);
+    border: 1.5px solid var(--gray-200);
+}
+
+.ss-attach-btn {
+    background: var(--gray-100);
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all .2s;
+}
+.ss-attach-btn:hover { background: var(--indigo-light); border-color: var(--indigo-mid); color: var(--indigo); }
+.ss-attach-btn:hover .bi { color: var(--indigo); }
+
+.ss-post-btn {
+    background: linear-gradient(to right, var(--indigo), var(--violet));
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 24px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: var(--shadow-btn);
+    transition: transform .15s, box-shadow .15s;
+}
+.ss-post-btn:hover  { transform: scale(1.02); box-shadow: 0 5px 16px rgba(79,70,229,.6); }
+.ss-post-btn:active { transform: scale(0.98); }
+
+/* ── Filter Bar ───────────────────────────── */
+.ss-filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 10px 16px;
+    box-shadow: 0 1px 6px rgba(0,0,0,.04);
+}
+.ss-filter-label { font-size: 12.5px; font-weight: 600; color: var(--gray-400); margin-right: 2px; }
+.ss-filter-btn {
+    background: var(--gray-100);
+    border: none;
+    border-radius: var(--radius-xs);
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-500);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all .2s;
+    text-decoration: none;
+}
+.ss-filter-btn:hover  { background: var(--indigo-light); color: var(--indigo); }
+.ss-filter-btn.active {
+    background: var(--indigo);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(79,70,229,.3);
+}
+.ss-filter-btn.active .bi { color: #fff; }
+.ss-latest-tag {
+    margin-left: auto;
+    background: var(--gray-100);
+    border-radius: var(--radius-xs);
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--gray-400);
+}
+
+/* ── Post Card ────────────────────────────── */
+.ss-post-card {
+    background: #fff;
+    border: 1px solid var(--gray-100);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 20px;
+    transition: box-shadow .2s, border-color .2s;
+}
+.ss-post-card:hover {
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--gray-200);
+}
+
+/* Post header */
+.ss-post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.ss-post-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; color: #fff;
+    flex-shrink: 0;
+}
+.ss-author-name  { font-weight: 700; font-size: 15px; color: var(--gray-800); }
+.ss-post-time    { font-size: 13px; color: var(--gray-400); margin-left: 8px; }
+.ss-author-role  { font-size: 12px; font-weight: 600; margin-top: 1px; }
+.ss-author-role-patient      { color: var(--indigo); }
+.ss-author-role-psychiatrist { color: var(--green); }
+.ss-author-role-admin        { color: var(--amber); }
+
+.ss-post-menu-btn {
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: var(--gray-400);
+    cursor: pointer;
+    padding: 0 8px;
+    line-height: 1;
+    border-radius: 6px;
+    transition: background .15s;
+}
+.ss-post-menu-btn:hover { background: var(--gray-100); color: var(--gray-700); }
+
+/* Post content */
+.ss-post-content {
+    font-size: 14px;
+    color: #1f2937;
+    line-height: 1.65;
+    margin-bottom: 14px;
+    white-space: pre-wrap;
+}
+
+/* Media grid */
+.ss-media-grid {
+    display: grid;
+    gap: 6px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+.ss-media-grid.one   { grid-template-columns: 1fr; }
+.ss-media-grid.two   { grid-template-columns: 1fr 1fr; }
+.ss-media-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+.ss-media-grid img,
+.ss-media-grid video {
+    width: 100%; object-fit: cover;
+    border-radius: 10px;
+    max-height: 300px;
+    display: block;
+}
+
+/* ── Reactions Preview Row ─────────────────── */
+.ss-reactions-preview {
+    display: flex;
+    align-items: center;
+    padding: 4px 0 10px;
+    border-bottom: 1px solid var(--gray-100);
+    margin-bottom: 10px;
+}
+.ss-reaction-icons { display: flex; align-items: center; gap: 2px; }
+.ss-reaction-icon-wrap {
+    width: 24px; height: 24px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0,0,0,.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    margin-left: -4px;
+}
+.ss-reaction-icon-wrap:first-child { margin-left: 0; }
+.ss-reaction-count { font-size: 12.5px; color: var(--gray-500); margin-left: 6px; }
+.ss-no-reactions   { font-size: 12.5px; color: var(--gray-400); font-style: italic; }
+.ss-comment-toggle-btn {
+    margin-left: auto;
+    background: none; border: none;
+    font-size: 12.5px; color: var(--gray-400);
+    cursor: pointer; padding: 0;
+    transition: color .15s;
+}
+.ss-comment-toggle-btn:hover { color: var(--indigo); }
+
+/* ── Reaction Buttons Bar ─────────────────── */
+.ss-reaction-bar {
+    display: flex;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+.ss-reaction-bar form { flex: 1; margin: 0; }
+.ss-rxn-btn {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-left: 1px solid var(--gray-200);
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: background .2s, color .2s;
+}
+.ss-reaction-bar form:first-child .ss-rxn-btn { border-left: none; }
+.ss-rxn-btn:hover  { background: var(--gray-100); }
+.ss-rxn-btn.active { background: var(--indigo-light); color: var(--indigo); }
+.ss-rxn-btn .rxn-count {
+    font-size: 12px;
+    background: var(--gray-200);
+    border-radius: 20px;
+    padding: 1px 7px;
+    font-weight: 700;
+    color: var(--gray-600);
+}
+.ss-rxn-btn.active .rxn-count { background: #c4b5fd; color: var(--indigo); }
+
+/* ── Comments Section ─────────────────────── */
+.ss-comments-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-100);
+}
+.ss-comments-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.ss-comments-title { font-weight: 700; font-size: 14px; color: var(--gray-800); }
+.ss-hide-btn {
+    margin-left: auto;
+    background: none; border: none;
+    font-size: 12px; color: var(--indigo); cursor: pointer;
+}
+
+/* Individual comment */
+.ss-comment { display: flex; gap: 10px; padding: 8px 0; }
+.ss-comment-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 11px; color: #fff;
+    flex-shrink: 0;
+    border: 2px solid #fff;
+}
+.ss-comment-body { flex: 1; min-width: 0; }
+.ss-comment-author  { font-weight: 700; font-size: 13px; color: var(--gray-800); }
+.ss-comment-time    { font-size: 11px; color: var(--gray-400); margin-left: 8px; }
+.ss-comment-edited  { font-size: 10px; color: var(--gray-400); font-style: italic; margin-left: 4px; }
+.ss-comment-text    { font-size: 13px; color: var(--gray-700); margin: 3px 0; line-height: 1.5; }
+.ss-comment-actions { display: flex; gap: 12px; margin-top: 4px; }
+.ss-comment-action-btn {
+    background: none; border: none;
+    font-size: 11px; font-weight: 600;
+    cursor: pointer; padding: 2px 0;
+    transition: color .15s;
+}
+.ss-reply-btn  { color: var(--indigo); }
+.ss-edit-btn   { color: var(--gray-500); }
+.ss-delete-btn { color: var(--red); }
+.ss-reply-btn:hover  { color: var(--violet); text-decoration: underline; }
+.ss-edit-btn:hover   { color: var(--gray-800); text-decoration: underline; }
+.ss-delete-btn:hover { color: #dc2626; text-decoration: underline; }
+
+/* Reply block */
+.ss-replies-block {
+    margin-left: 42px;
+    margin-top: 8px;
+    background: #f0f0ff;
+    border: 1px solid #d0d0ff;
+    border-radius: var(--radius-xs);
+    padding: 8px;
+}
+.ss-reply-indicator {
+    font-size: 11px; color: var(--gray-400);
+    margin-bottom: 2px;
+    padding-left: 42px;
+}
+
+/* Comment / Reply input */
+.ss-comment-input-wrap { display: flex; gap: 8px; margin-top: 14px; }
+.ss-comment-input {
+    flex: 1;
+    background: var(--gray-50);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--gray-800);
+    outline: none;
+    font-family: inherit;
+    transition: border-color .2s;
+}
+.ss-comment-input::placeholder { color: var(--gray-400); }
+.ss-comment-input:focus { border-color: var(--indigo); background: #fff; }
+.ss-comment-submit-btn {
+    background: var(--indigo);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: background .2s;
+    flex-shrink: 0;
+}
+.ss-comment-submit-btn:hover { background: var(--violet); }
+
+/* Inline edit form */
+.ss-inline-edit { display: none; margin-top: 6px; }
+.ss-inline-edit.show { display: flex; gap: 8px; }
+.ss-inline-edit textarea {
+    flex: 1;
+    border: 1.5px solid var(--indigo);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    resize: none;
+    background: var(--indigo-light);
+}
+.ss-inline-edit-save {
+    background: var(--indigo);
+    border: none; border-radius: 10px;
+    padding: 8px 14px;
+    color: #fff; font-size: 13px; font-weight: 600;
+    cursor: pointer;
+}
+.ss-inline-edit-cancel {
+    background: var(--gray-100);
+    border: none; border-radius: 10px;
+    padding: 8px 14px;
+    color: var(--gray-700); font-size: 13px;
+    cursor: pointer;
+}
+
+/* Reply toggle btn */
+.ss-replies-toggle {
+    background: none; border: none;
+    color: var(--indigo); font-size: 12px; cursor: pointer;
+    padding: 4px 0 4px 42px;
+    display: block;
+    transition: color .15s;
+}
+.ss-replies-toggle:hover { color: var(--violet); text-decoration: underline; }
+
+/* Post inline edit */
+.ss-post-edit-form { display: none; }
+.ss-post-edit-form.show { display: block; }
+.ss-post-view.hidden { display: none; }
+
+/* ── No Posts Empty State ─────────────────── */
+.ss-empty-state {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-card);
+    padding: 48px;
+    text-align: center;
+}
+.ss-empty-icon-wrap {
+    width: 72px; height: 72px;
+    background: var(--gray-100);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px;
+    font-size: 30px; color: var(--gray-400);
+}
+.ss-empty-title { font-size: 18px; font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+.ss-empty-sub   { font-size: 13.5px; color: var(--gray-500); }
+
+/* ── Visibility badge on posts ────────────── */
+.ss-vis-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--gray-100);
+    color: var(--gray-500);
+}
+.ss-vis-badge-public         { background: #dcfce7; color: #16a34a; }
+.ss-vis-badge-patients_only  { background: var(--indigo-light); color: var(--indigo); }
+
+/* ── No comments placeholder ──────────────── */
+.ss-no-comments {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+.ss-no-comments p { margin: 0; font-size: 13px; color: var(--gray-500); }
+.ss-no-comments small { font-size: 12px; color: var(--gray-400); font-style: italic; }
+
+/* ── Flash toasts ─────────────────────────── */
+.ss-toast-success {
+    background: #f0fdf4;
+    border: 1.5px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 10px;
+    color: #166534;
+    font-size: 13.5px;
+    box-shadow: 0 4px 16px rgba(22,163,74,.15);
+}
+.ss-toast-error {
+    background: #fef2f2;
+    border: 1.5px solid #fecaca;
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 10px;
+    color: #991b1b;
+    font-size: 13.5px;
+    box-shadow: 0 4px 16px rgba(220,38,38,.15);
+}
+
+/* ── Delete confirm modal ─────────────────── */
+.ss-confirm-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 500;
+    align-items: center; justify-content: center;
+}
+.ss-confirm-overlay.show { display: flex; }
+.ss-confirm-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px;
+    width: 360px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.15);
+    text-align: center;
+}
+.ss-confirm-title { font-size: 17px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+.ss-confirm-sub   { font-size: 13px; color: var(--gray-500); margin-bottom: 20px; }
+.ss-confirm-btns  { display: flex; gap: 10px; justify-content: center; }
+.ss-confirm-cancel {
+    background: var(--gray-100); border: none;
+    border-radius: 10px; padding: 9px 22px;
+    font-size: 13.5px; color: var(--gray-700); cursor: pointer;
+}
+.ss-confirm-delete {
+    background: #dc2626; border: none;
+    border-radius: 10px; padding: 9px 22px;
+    font-size: 13.5px; font-weight: 600; color: #fff; cursor: pointer;
+}
+
+/* ── Responsive ───────────────────────────── */
+@media (max-width: 768px) {
+    .ss-feed-wrap { padding: 16px 12px; }
+    .ss-navbar { padding: 0 12px; gap: 10px; }
+    .ss-search-wrap { max-width: 180px; }
+    .ss-nav-info { display: none; }
+}
+
+/* hide separator after last comment */
+.ss-comments-section > .ss-comment-sep:last-of-type,
+.ss-comments-section > div:last-child > .ss-comment-sep { display: none; }
+/* simpler: hide last hr inside the comments loop */
+.ss-comment-sep:last-of-type { display: none; }
+</style>
+{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8 mx-auto">
+{# ── helpers ── #}
+{% macro avatarClass(role) %}{% if role == 'PSYCHIATRIST' %}ss-avatar-psychiatrist{% elseif role == 'ADMIN' %}ss-avatar-admin{% else %}ss-avatar-patient{% endif %}{% endmacro %}
+{% macro roleClass(role)   %}{% if role == 'PSYCHIATRIST' %}ss-author-role-psychiatrist{% elseif role == 'ADMIN' %}ss-author-role-admin{% else %}ss-author-role-patient{% endif %}{% endmacro %}
+{% macro avatarBg(role)    %}{% if role == 'PSYCHIATRIST' %}background:#10b981{% elseif role == 'ADMIN' %}background:#f59e0b{% else %}background:#4f46e5{% endif %}{% endmacro %}
+{% macro initials(name)    %}{% set parts = name|split(' ') %}{{ parts[0]|slice(0,1)|upper }}{% if parts[1] is defined %}{{ parts[1]|slice(0,1)|upper }}{% endif %}{% endmacro %}
+{% macro timeAgo(dt) %}
+    {% if dt %}
+        {% set diff = "now"|date('U') - dt|date('U') %}
+        {% if diff < 60 %}Just now
+        {% elseif diff < 3600 %}{{ (diff / 60)|round }} min ago
+        {% elseif diff < 86400 %}{{ (diff / 3600)|round }}h ago
+        {% elseif diff < 604800 %}{{ (diff / 86400)|round }}d ago
+        {% else %}{{ dt|date('M d, Y') }}
+        {% endif %}
+    {% endif %}
+{% endmacro %}
 
-            {# ── Create Post Box ─────────────────────────────────────────── #}
-            <div class="card mb-4 shadow-sm">
-                <div class="card-body">
-                    <h5 class="mb-3">Create a Post</h5>
-                    <form method="post" action="{{ path('post_new') }}" enctype="multipart/form-data">
+{# ═══════════════════════════════════ NAVBAR ═══════════════════════════════════ #}
+<nav class="ss-navbar">
+    <a href="{{ path('app_feed') }}" class="ss-logo">
+        <i class="bi bi-shield-fill-check ss-logo-icon"></i>
+        <span class="ss-logo-text">SafeSpace</span>
+    </a>
+
+    <div class="ss-search-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text" class="ss-search" id="searchInput" placeholder="Search posts…">
+    </div>
+
+    <div class="ss-nav-right">
+        {% if currentUser %}
+            <a href="#" class="ss-avatar {{ _self.avatarClass(currentUser.role) }}" title="{{ currentUser.fullName }}">
+                {% if currentUser.profilePicture %}
+                    <img src="{{ currentUser.profilePicture }}" alt="{{ currentUser.fullName }}" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+                {% else %}
+                    {{ _self.initials(currentUser.fullName) }}
+                {% endif %}
+            </a>
+            <div class="ss-nav-info">
+                <div class="ss-nav-name">{{ currentUser.fullName }}</div>
+                <div class="ss-nav-role ss-nav-role-{{ currentUser.role|lower }}">{{ currentUser.role }}</div>
+            </div>
+        {% endif %}
+        <a href="{{ path('app_home') }}" class="ss-home-btn" title="Home">
+            <i class="bi bi-house-fill"></i>
+        </a>
+    </div>
+</nav>
+
+{# ═══════════════════════════════════ FEED ═══════════════════════════════════ #}
+<div class="ss-feed-wrap">
+<div class="ss-feed-inner">
+
+    {# Flash messages #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="ss-toast-{{ label == 'success' ? 'success' : 'error' }}">
+                <i class="bi bi-{{ label == 'success' ? 'check-circle-fill' : 'exclamation-circle-fill' }}" style="font-size:18px;flex-shrink:0;"></i>
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {# ──── Welcome Banner ──── #}
+    <div class="ss-welcome">
+        <div>
+            <div class="ss-welcome-title">Welcome back, {{ currentUser.fullName|split(' ')[0] }}! 👋</div>
+            <div class="ss-welcome-sub">What's on your mind today?</div>
+        </div>
+        <div class="ss-welcome-icon-wrap"><i class="bi bi-heart-fill"></i></div>
+    </div>
+
+    {# ──── Create Post Card ──── #}
+    <div class="ss-card" id="createPostCard">
+        <form action="{{ path('post_new') }}" method="post" enctype="multipart/form-data" id="createPostForm">
+            {# CSRF token — PostType uses token id "post" #}
+            <input type="hidden" name="post[_token]" value="{{ csrf_token('post') }}">
+
+            <div class="d-flex gap-3 align-items-start mb-3">
+                <div class="ss-create-avatar"><i class="bi bi-pen-fill"></i></div>
+                <textarea name="post[content]"
+                          class="ss-textarea" rows="3"
+                          placeholder="What's on your mind?"></textarea>
+            </div>
+
+            {# Visibility selector #}
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="ss-vis-label">Who can see this?</span>
+                <button type="button" class="ss-vis-btn {{ currentUser.role != 'PATIENT' ? 'active' : '' }}"
+                        onclick="setVisibility(this,'PUBLIC')">
+                    <i class="bi bi-globe2"></i> Public
+                </button>
+                {% if currentUser.role == 'PATIENT' %}
+                <button type="button" class="ss-vis-btn active"
+                        onclick="setVisibility(this,'PATIENTS_ONLY')">
+                    <i class="bi bi-people-fill"></i> Patients Only
+                </button>
+                {% endif %}
+                <input type="hidden" name="post[visibility]" id="visibilityInput"
+                       value="{{ currentUser.role == 'PATIENT' ? 'PATIENTS_ONLY' : 'PUBLIC' }}">
+            </div>
+
+            {# Media preview #}
+            <div class="ss-media-preview mb-3" id="mediaPreview">
+                <div class="d-flex flex-wrap gap-2" id="mediaThumbs"></div>
+            </div>
+
+            {# Actions #}
+            <div class="d-flex justify-content-between align-items-center">
+                <label class="ss-attach-btn mb-0" style="cursor:pointer;">
+                    <i class="bi bi-camera-fill"></i> Add Media
+                    <input type="file" name="post[mediaFiles][]" id="mediaFilesInput"
+                           multiple accept="image/*,video/*" style="display:none;"
+                           onchange="previewMedia(this)">
+                </label>
+                <button type="submit" class="ss-post-btn">Post</button>
+            </div>
+        </form>
+    </div>
+
+
+    {# ──── Filter Bar ──── #}
+    <div class="ss-filters">
+        <span class="ss-filter-label">Filter</span>
+        <a href="{{ path('app_feed') }}" class="ss-filter-btn {{ app.request.query.get('filter') is null ? 'active' : '' }}">All Posts</a>
+        <a href="{{ path('app_feed', {'filter': 'PUBLIC'}) }}" class="ss-filter-btn {{ app.request.query.get('filter') == 'PUBLIC' ? 'active' : '' }}">
+            <i class="bi bi-globe2"></i> Public
+        </a>
+        {% if currentUser.role == 'PATIENT' %}
+        <a href="{{ path('app_feed', {'filter': 'PATIENTS_ONLY'}) }}" class="ss-filter-btn {{ app.request.query.get('filter') == 'PATIENTS_ONLY' ? 'active' : '' }}">
+            <i class="bi bi-people-fill"></i> Patients Only
+        </a>
+        {% endif %}
+        <div class="ss-latest-tag ms-auto">
+            <i class="bi bi-clock"></i> Latest
+        </div>
+    </div>
+
+    {# ──── Posts ──── #}
+    {% if posts is empty %}
+        <div class="ss-empty-state">
+            <div class="ss-empty-icon-wrap"><i class="bi bi-chat-slash-fill"></i></div>
+            <div class="ss-empty-title">No posts yet</div>
+            <div class="ss-empty-sub">Be the first to share something!</div>
+        </div>
+    {% else %}
+        {% for post in posts %}
+            {% if not post.isDeleted %}
+            {% set author = post.author %}
+            {% set userReaction = post.getUserReaction(currentUser) %}
+            {% set reactionCounts = post.getReactionCounts() %}
+            {% set totalReactions = post.getTotalReactions() %}
+            {% set topLevelComments = post.comments|filter(c => not c.isDeleted and c.parentComment is null) %}
+
+            <div class="ss-post-card" id="post-{{ post.id }}">
+
+                {# ── Post Header ── #}
+                <div class="ss-post-header">
+                    <div class="ss-post-avatar" style="{{ _self.avatarBg(author.role) }}">
+                        {% if author.profilePicture %}
+                            <img src="{{ author.profilePicture }}" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                        {% else %}
+                            {{ _self.initials(author.fullName) }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div>
+                            <span class="ss-author-name">{{ author.fullName }}</span>
+                            <span class="ss-post-time">{{ _self.timeAgo(post.createdAt) }}</span>
+                        </div>
+                        <div class="ss-author-role {{ _self.roleClass(author.role) }}">
+                            {{ author.role }}
+                            &nbsp;·&nbsp;
+                            <span class="ss-vis-badge ss-vis-badge-{{ post.visibility|lower }}">
+                                <i class="bi bi-{{ post.visibility == 'PUBLIC' ? 'globe2' : 'people-fill' }}"></i>
+                                {{ post.visibility == 'PUBLIC' ? 'Public' : 'Patients Only' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {% if currentUser.id == author.id %}
+                    <div class="dropdown" style="margin-left:auto;">
+                        <button class="ss-post-menu-btn" data-bs-toggle="dropdown" aria-expanded="false">⋯</button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="border-radius:12px;border:1px solid #e5e7eb;padding:6px 0;">
+                            <li>
+                                <button class="dropdown-item d-flex align-items-center gap-2"
+                                        onclick="toggleEditPost({{ post.id }})"
+                                        style="font-size:13px;padding:10px 16px;">
+                                    <i class="bi bi-pencil-fill text-secondary"></i> Edit post
+                                </button>
+                            </li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li>
+                                <button class="dropdown-item d-flex align-items-center gap-2 text-danger"
+                                        onclick="confirmDelete({{ post.id }})"
+                                        style="font-size:13px;padding:10px 16px;">
+                                    <i class="bi bi-trash-fill"></i> Delete post
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {# ── Post read view ── #}
+                <div class="ss-post-view" id="post-view-{{ post.id }}">
+                    <div class="ss-post-content">{{ post.content }}</div>
+
+                    {# Media Gallery #}
+                    {% if post.mediaList is not empty %}
+                        {% set mediaCount = post.mediaList|length %}
+                        <div class="ss-media-grid {{ mediaCount == 1 ? 'one' : (mediaCount == 2 ? 'two' : 'three') }} mb-3">
+                            {% for media in post.mediaList %}
+                                {% if media.mediaType == 'VIDEO' %}
+                                    <video controls><source src="{{ media.mediaUrl }}"></video>
+                                {% else %}
+                                    <img src="{{ media.mediaUrl }}" alt="Post media" loading="lazy">
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {# ── Reactions Preview ── #}
+                    <div class="ss-reactions-preview">
+                        <div class="d-flex align-items-center gap-2">
+                            {% if totalReactions == 0 %}
+                                <span class="ss-no-reactions">Be the first to react</span>
+                            {% else %}
+                                <div class="ss-reaction-icons">
+                                    {% if reactionCounts['LIKE'] is defined and reactionCounts['LIKE'] > 0 %}
+                                        <div class="ss-reaction-icon-wrap">👍</div>
+                                    {% endif %}
+                                    {% if reactionCounts['LOVE'] is defined and reactionCounts['LOVE'] > 0 %}
+                                        <div class="ss-reaction-icon-wrap">❤️</div>
+                                    {% endif %}
+                                    {% if reactionCounts['SUPPORT'] is defined and reactionCounts['SUPPORT'] > 0 %}
+                                        <div class="ss-reaction-icon-wrap">💙</div>
+                                    {% endif %}
+                                </div>
+                                <span class="ss-reaction-count">
+                                    {% if totalReactions == 1 %}1 reaction{% else %}{{ totalReactions }} reactions{% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <button class="ss-comment-toggle-btn" onclick="toggleComments({{ post.id }})">
+                            {{ topLevelComments|length }}
+                            comment{% if topLevelComments|length != 1 %}s{% endif %}
+                        </button>
+                    </div>
+
+                    {# ── Reaction Buttons Bar ── #}
+                    <div class="ss-reaction-bar">
+                        {% set reactions = [
+                            {type: 'LIKE',    emoji: '👍', label: 'Like'},
+                            {type: 'LOVE',    emoji: '❤️', label: 'Love'},
+                            {type: 'SUPPORT', emoji: '💙', label: 'Support'},
+                        ] %}
+                        {% for rxn in reactions %}
+                            {% set isActive = userReaction == rxn.type %}
+                            {% set count = reactionCounts[rxn.type] is defined ? reactionCounts[rxn.type] : 0 %}
+                            <form action="{{ isActive ? path('reaction_delete', {postId: post.id, userId: currentUser.id}) : path('reaction_new') }}" method="post">
+                                {% if not isActive %}
+                                    <input type="hidden" name="reaction[post]" value="{{ post.id }}">
+                                    <input type="hidden" name="reaction[reactionType]" value="{{ rxn.type }}">
+                                    <input type="hidden" name="reaction[_token]" value="{{ csrf_token('reaction') }}">
+                                {% else %}
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id ~ '_' ~ currentUser.id) }}">
+                                {% endif %}
+                                <button type="submit" class="ss-rxn-btn {{ isActive ? 'active' : '' }}">
+                                    {{ rxn.emoji }} {{ rxn.label }}
+                                    {% if count > 0 %}<span class="rxn-count">{{ count }}</span>{% endif %}
+                                </button>
+                            </form>
+                        {% endfor %}
+                    </div>
+                </div>{# end ss-post-view #}
+
+                {# ── Inline Edit Form ── #}
+                <div class="ss-post-edit-form" id="post-edit-{{ post.id }}">
+                    <form action="{{ path('post_edit', {id: post.id}) }}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="_method" value="POST">
                         <input type="hidden" name="post[_token]" value="{{ csrf_token('post') }}">
-                        <div class="mb-2">
-                            <textarea
-                                name="post[content]"
-                                class="form-control"
-                                rows="3"
-                                placeholder="What's on your mind?"
-                                required
-                            ></textarea>
+                        <textarea name="post[content]" class="ss-textarea mb-3" rows="4">{{ post.content }}</textarea>
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span class="ss-vis-label">Visibility</span>
+                            <button type="button" class="ss-vis-btn {{ post.visibility == 'PUBLIC' ? 'active' : '' }}"
+                                    onclick="setVisibilityEdit(this,'PUBLIC',{{ post.id }})">
+                                <i class="bi bi-globe2"></i> Public
+                            </button>
+                            {% if currentUser.role == 'PATIENT' %}
+                            <button type="button" class="ss-vis-btn {{ post.visibility == 'PATIENTS_ONLY' ? 'active' : '' }}"
+                                    onclick="setVisibilityEdit(this,'PATIENTS_ONLY',{{ post.id }})">
+                                <i class="bi bi-people-fill"></i> Patients Only
+                            </button>
+                            {% endif %}
+                            <input type="hidden" name="post[visibility]" id="editVis-{{ post.id }}" value="{{ post.visibility }}">
                         </div>
-                        <div class="mb-2">
-                            <label class="form-label mb-1 small text-muted">Add pictures or videos</label>
-                            <input
-                                type="file"
-                                name="post[mediaFiles][]"
-                                class="form-control form-control-sm"
-                                accept="image/*,video/*"
-                                multiple
-                            >
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center gap-2">
-                            <select name="post[visibility]" class="form-select form-select-sm w-auto">
-                                <option value="PUBLIC">🌍 Public</option>
-                                <option value="PATIENTS_ONLY" selected>👥 Patients Only</option>
-                            </select>
-                            <button type="submit" class="btn btn-primary btn-sm px-4">Post</button>
+                        <div class="d-flex gap-2 justify-content-end">
+                            <button type="button" class="ss-inline-edit-cancel" onclick="toggleEditPost({{ post.id }})">Cancel</button>
+                            <button type="submit" class="ss-post-btn" style="padding:9px 18px;font-size:13px;">Save changes</button>
                         </div>
                     </form>
                 </div>
-            </div>
 
-            {# ── Posts Feed ──────────────────────────────────────────────── #}
-            {% if posts|length > 0 %}
-                {% for post in posts %}
-                    {% set userReaction    = post.getUserReaction(currentUser) %}
-                    {% set reactionCounts  = post.getReactionCounts() %}
+                {# ── Comments Section ── #}
+                <div class="ss-comments-section" id="comments-section-{{ post.id }}" style="display:none;">
+                    
+                    <div class="ss-comments-header">
+                        <span class="ss-comments-title">💬 {{ topLevelComments|length }} Comment{% if topLevelComments|length != 1 %}s{% endif %}</span>
+                        <button class="ss-hide-btn" onclick="toggleComments({{ post.id }})">Hide</button>
+                    </div>
 
-                    <div class="card mb-4 shadow-sm" id="post-{{ post.id }}">
-                        <div class="card-body">
-
-                            {# ── Post Header ─────────────────────────────── #}
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div class="d-flex gap-2 align-items-center">
-                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold"
-                                         style="width:40px;height:40px;flex-shrink:0;font-size:.85rem;">
-                                        {{ post.author.initials }}
-                                    </div>
-                                    <div>
-                                        <div class="fw-semibold lh-1">{{ post.author.fullName }}</div>
-                                        <small class="text-muted">
-                                            {{ post.createdAt|date('M d, H:i') }}
-                                            &nbsp;·&nbsp;
-                                            {% if post.visibility == 'PUBLIC' %}🌍{% else %}👥{% endif %}
-                                        </small>
-                                    </div>
+                    {% if topLevelComments is empty %}
+                        <div class="ss-no-comments">
+                            <p>No comments yet</p>
+                            <small>Be the first to comment</small>
+                        </div>
+                    {% else %}
+                        {% for comment in topLevelComments %}
+                            {# ── Comment row ── #}
+                            <div class="ss-comment" id="comment-{{ comment.id }}">
+                                <div class="ss-comment-avatar" style="{{ _self.avatarBg(comment.author.role) }}">
+                                    {{ _self.initials(comment.author.fullName) }}
                                 </div>
+                                <div class="ss-comment-body">
+                                    <div>
+                                        <span class="ss-comment-author">{{ comment.author.fullName }}</span>
+                                        <span class="ss-comment-time">{{ _self.timeAgo(comment.createdAt) }}</span>
+                                        {% if comment.isEdited %}<span class="ss-comment-edited">(edited)</span>{% endif %}
+                                    </div>
+                                    <div class="ss-comment-text" id="comment-text-{{ comment.id }}">{{ comment.content }}</div>
 
-                                {% if post.author.id == currentUser.id %}
-                                    <div class="d-flex gap-2">
-                                        <button class="btn btn-sm btn-outline-secondary"
-                                                onclick="toggleEditPost({{ post.id }})">Edit</button>
-                                        <form method="post" action="{{ path('post_delete', {'id': post.id}) }}"
-                                              onsubmit="return confirm('Delete this post?');">
-                                            <input type="hidden" name="_token"
-                                                   value="{{ csrf_token('delete' ~ post.id) }}">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    {# Inline edit #}
+                                    <div class="ss-inline-edit" id="comment-edit-{{ comment.id }}">
+                                        <form action="{{ path('comment_edit', {id: comment.id}) }}" method="post" style="flex:1;display:flex;gap:8px;">
+                                            <input type="hidden" name="_method" value="POST">
+                                            <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
+                                            <textarea name="comment[content]" rows="2" style="flex:1;border:1.5px solid #4f46e5;border-radius:10px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none;resize:none;background:#ede9fe;">{{ comment.content }}</textarea>
+                                            <div style="display:flex;flex-direction:column;gap:4px;">
+                                                <button type="submit" class="ss-inline-edit-save">Save</button>
+                                                <button type="button" class="ss-inline-edit-cancel" onclick="toggleEditComment({{ comment.id }})">Cancel</button>
+                                            </div>
                                         </form>
                                     </div>
-                                {% endif %}
+
+                                    <div class="ss-comment-actions">
+                                        <button class="ss-comment-action-btn ss-reply-btn"
+                                                onclick="toggleReplyForm({{ comment.id }})">Reply</button>
+                                        {% if currentUser.id == comment.author.id %}
+                                            <button class="ss-comment-action-btn ss-edit-btn"
+                                                    onclick="toggleEditComment({{ comment.id }})">Edit</button>
+                                            <form action="{{ path('comment_delete', {id: comment.id}) }}" method="post" style="display:inline;">
+                                                <input type="hidden" name="_method" value="POST">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                                                <button type="submit" class="ss-comment-action-btn ss-delete-btn"
+                                                        onclick="return confirm('Delete this comment?')">Delete</button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
 
-                            {# ── Post Content (view mode) ─────────────────── #}
-                            <div id="post-content-{{ post.id }}">
-                                <p class="mb-2">{{ post.content|nl2br }}</p>
-                                {% if post.mediaList|length > 0 %}
-                                    <div class="mt-2">
-                                        {% for media in post.mediaList %}
-                                            {% if media.mediaType == 'VIDEO' %}
-                                                <video controls class="w-100 rounded border mb-2" preload="metadata">
-                                                    <source src="{{ media.mediaUrl }}">
-                                                </video>
-                                            {% else %}
-                                                <img src="{{ media.mediaUrl }}" alt="Post image"
-                                                     class="img-fluid rounded border mb-2">
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
+                            {# ── Replies toggle ── #}
+                            {% set replies = comment.replies|filter(r => not r.isDeleted) %}
+                            {% if replies is not empty %}
+                                <button class="ss-replies-toggle" id="replies-toggle-{{ comment.id }}"
+                                        onclick="toggleReplies({{ comment.id }})">
+                                    ▶ Show replies ({{ replies|length }})
+                                </button>
+                                <div class="ss-replies-block" id="replies-block-{{ comment.id }}" style="display:none;">
+                                    {% for reply in replies %}
+                                        <div class="ss-reply-indicator">↳ replying to {{ comment.author.fullName|split(' ')[0] }}</div>
+                                        <div class="ss-comment" id="comment-{{ reply.id }}">
+                                            <div class="ss-comment-avatar" style="{{ _self.avatarBg(reply.author.role) }}">
+                                                {{ _self.initials(reply.author.fullName) }}
+                                            </div>
+                                            <div class="ss-comment-body">
+                                                <div>
+                                                    <span class="ss-comment-author">{{ reply.author.fullName }}</span>
+                                                    <span class="ss-comment-time">{{ _self.timeAgo(reply.createdAt) }}</span>
+                                                    {% if reply.isEdited %}<span class="ss-comment-edited">(edited)</span>{% endif %}
+                                                </div>
+                                                <div class="ss-comment-text" id="comment-text-{{ reply.id }}">{{ reply.content }}</div>
 
-                            {# ── Post Edit Form (hidden by default) ────────── #}
-                            <div id="post-edit-{{ post.id }}" style="display:none;" class="mb-3">
-                                <form method="post" action="{{ path('post_edit', {'id': post.id}) }}"
-                                      enctype="multipart/form-data">
-                                    <input type="hidden" name="post[_token]" value="{{ csrf_token('post') }}">
-                                    <input type="hidden" name="post[visibility]" value="{{ post.visibility }}">
-                                    <textarea name="post[content]" class="form-control mb-2" rows="3"
-                                              required>{{ post.content }}</textarea>
-                                    <label class="form-label small text-muted mb-1">Replace media (optional)</label>
-                                    <input type="file" name="post[mediaFiles][]"
-                                           class="form-control form-control-sm mb-2"
-                                           accept="image/*,video/*" multiple>
-                                    {% if post.mediaList|length > 0 %}
-                                        {% for media in post.mediaList %}
-                                            <input type="hidden"
-                                                   name="post[mediaList][{{ loop.index0 }}][mediaUrl]"
-                                                   value="{{ media.mediaUrl }}">
-                                            <input type="hidden"
-                                                   name="post[mediaList][{{ loop.index0 }}][mediaType]"
-                                                   value="{{ media.mediaType }}">
-                                            <input type="hidden"
-                                                   name="post[mediaList][{{ loop.index0 }}][displayOrder]"
-                                                   value="{{ media.displayOrder }}">
-                                        {% endfor %}
-                                    {% else %}
-                                        <input type="hidden" name="post[mediaList][0][mediaUrl]" value="">
-                                        <input type="hidden" name="post[mediaList][0][mediaType]" value="IMAGE">
-                                        <input type="hidden" name="post[mediaList][0][displayOrder]" value="0">
-                                    {% endif %}
-                                    <div class="d-flex gap-2">
-                                        <button type="submit" class="btn btn-sm btn-success">Save</button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary"
-                                                onclick="toggleEditPost({{ post.id }})">Cancel</button>
+                                                <div class="ss-inline-edit" id="comment-edit-{{ reply.id }}">
+                                                    <form action="{{ path('comment_edit', {id: reply.id}) }}" method="post" style="flex:1;display:flex;gap:8px;">
+                                                        <input type="hidden" name="_method" value="POST">
+                                                        <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
+                                                        <textarea name="comment[content]" rows="2" style="flex:1;border:1.5px solid #4f46e5;border-radius:10px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none;resize:none;background:#ede9fe;">{{ reply.content }}</textarea>
+                                                        <div style="display:flex;flex-direction:column;gap:4px;">
+                                                            <button type="submit" class="ss-inline-edit-save">Save</button>
+                                                            <button type="button" class="ss-inline-edit-cancel" onclick="toggleEditComment({{ reply.id }})">Cancel</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+
+                                                <div class="ss-comment-actions">
+                                                    {% if currentUser.id == reply.author.id %}
+                                                        <button class="ss-comment-action-btn ss-edit-btn"
+                                                                onclick="toggleEditComment({{ reply.id }})">Edit</button>
+                                                        <form action="{{ path('comment_delete', {id: reply.id}) }}" method="post" style="display:inline;">
+                                                            <input type="hidden" name="_method" value="POST">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reply.id) }}">
+                                                            <button type="submit" class="ss-comment-action-btn ss-delete-btn"
+                                                                    onclick="return confirm('Delete this reply?')">Delete</button>
+                                                        </form>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
+                                    {# Reply input inside expanded replies #}
+                                    <div class="ss-comment-input-wrap" style="padding-left:0;margin-top:10px;">
+                                        <form action="{{ path('comment_new') }}" method="post" style="display:flex;gap:8px;flex:1;">
+                                            <input type="hidden" name="comment[post]" value="{{ post.id }}">
+                                            <input type="hidden" name="comment[parentComment]" value="{{ comment.id }}">
+                                            <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
+                                            <input type="text" name="comment[content]" class="ss-comment-input"
+                                                   placeholder="Write a reply…">
+                                            <button type="submit" class="ss-comment-submit-btn">Reply</button>
+                                        </form>
                                     </div>
+                                </div>
+                            {% endif %}
+
+                            {# Inline reply form (collapsed by default) #}
+                            <div class="ss-comment-input-wrap" id="reply-form-{{ comment.id }}" style="display:none;padding-left:42px;">
+                                <form action="{{ path('comment_new') }}" method="post" style="display:flex;gap:8px;flex:1;">
+                                    <input type="hidden" name="comment[post]" value="{{ post.id }}">
+                                    <input type="hidden" name="comment[parentComment]" value="{{ comment.id }}">
+                                    <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
+                                    <input type="text" name="comment[content]" class="ss-comment-input"
+                                           placeholder="Write a reply…" id="reply-input-{{ comment.id }}">
+                                    <button type="submit" class="ss-comment-submit-btn">Reply</button>
                                 </form>
                             </div>
 
-                            {# ── Reaction Buttons with Counts (3 types only) ── #}
-                            <div class="d-flex flex-wrap gap-1 mt-3 mb-2">
-                                {% for type, emoji in reactionEmojis %}
-                                    {% set count    = reactionCounts[type] ?? 0 %}
-                                    {% set isActive = (userReaction == type) %}
+                            <hr class="ss-comment-sep" style="border:none;border-top:1px solid var(--gray-100);margin:4px 0;opacity:.4;">
+                        {% endfor %}
+                    {% endif %}
 
-                                    {% if isActive %}
-                                        {# Active → clicking removes the reaction #}
-                                        <form method="post"
-                                              action="{{ path('reaction_delete', {'postId': post.id, 'userId': currentUser.id}) }}">
-                                            <input type="hidden" name="_token"
-                                                   value="{{ csrf_token('delete' ~ post.id ~ '_' ~ currentUser.id) }}">
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-primary reaction-btn active"
-                                                    title="Remove reaction">
-                                                {{ emoji }}
-                                                <span class="reaction-label">
-                                                    {{ type|lower|replace({'_': ' '})|capitalize }}
-                                                </span>
-                                                {% if count > 0 %}
-                                                    <span class="badge bg-white text-primary ms-1">{{ count }}</span>
-                                                {% endif %}
-                                            </button>
-                                        </form>
-                                    {% else %}
-                                        {# Inactive → clicking adds / switches to this reaction #}
-                                        <form method="post" action="{{ path('reaction_new') }}">
-                                            <input type="hidden" name="reaction[_token]"
-                                                   value="{{ csrf_token('reaction') }}">
-                                            <input type="hidden" name="reaction[post]" value="{{ post.id }}">
-                                            <input type="hidden" name="reaction[reactionType]" value="{{ type }}">
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-outline-secondary reaction-btn"
-                                                    title="{{ type|lower|replace({'_': ' '})|capitalize }}">
-                                                {{ emoji }}
-                                                <span class="reaction-label">
-                                                    {{ type|lower|replace({'_': ' '})|capitalize }}
-                                                </span>
-                                                {% if count > 0 %}
-                                                    <span class="badge bg-secondary ms-1">{{ count }}</span>
-                                                {% endif %}
-                                            </button>
-                                        </form>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
+                    {# ── New top-level comment ── #}
+                    <div class="ss-comment-input-wrap mt-3">
+                        <form action="{{ path('comment_new') }}" method="post" style="display:flex;gap:8px;flex:1;">
+                            <input type="hidden" name="comment[post]" value="{{ post.id }}">
+                            <input type="hidden" name="comment[parentComment]" value="">
+                            <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
+                            <input type="text" name="comment[content]" class="ss-comment-input"
+                                   placeholder="Write a comment…">
+                            <button type="submit" class="ss-comment-submit-btn">Post</button>
+                        </form>
+                    </div>
+                </div>{# end comments-section #}
 
-                            {# ── Comments & Replies Section ───────────────── #}
-                            <hr class="my-2">
-                            <div class="comments-section">
-                                <div class="fw-semibold mb-2 small text-muted">
-                                    {{ post.comments|length }}
-                                    comment{{ post.comments|length != 1 ? 's' : '' }}
-                                </div>
-
-                                {% for comment in post.comments %}
-                                    {% if not comment.deleted and comment.parentComment is null %}
-                                        <div class="comment-thread mb-2" id="comment-{{ comment.id }}">
-
-                                            {# ── Top-level comment ────────── #}
-                                            <div class="d-flex gap-2">
-                                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-                                                     style="width:32px;height:32px;font-size:.7rem;">
-                                                    {{ comment.author.initials }}
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <div class="bg-light rounded px-3 py-2">
-                                                        <div class="fw-semibold small">
-                                                            {{ comment.author.fullName }}
-                                                            {% if comment.edited %}
-                                                                <span class="text-muted fw-normal">(edited)</span>
-                                                            {% endif %}
-                                                        </div>
-                                                        <div id="comment-content-{{ comment.id }}">
-                                                            {{ comment.content }}
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="d-flex gap-3 mt-1 ms-1">
-                                                        <small class="text-muted">
-                                                            {{ comment.createdAt|date('M d, H:i') }}
-                                                        </small>
-                                                        <button class="btn btn-link btn-sm p-0 text-muted small"
-                                                                onclick="toggleReplyForm({{ comment.id }})">
-                                                            Reply
-                                                        </button>
-                                                        {% if comment.author.id == currentUser.id %}
-                                                            <button class="btn btn-link btn-sm p-0 text-muted small"
-                                                                    onclick="toggleEditComment({{ comment.id }})">
-                                                                Edit
-                                                            </button>
-                                                            <form method="post"
-                                                                  action="{{ path('comment_delete', {'id': comment.id}) }}"
-                                                                  onsubmit="return confirm('Delete this comment?');">
-                                                                <input type="hidden" name="_token"
-                                                                       value="{{ csrf_token('delete' ~ comment.id) }}">
-                                                                <button type="submit"
-                                                                        class="btn btn-link btn-sm p-0 text-danger small">
-                                                                    Delete
-                                                                </button>
-                                                            </form>
-                                                        {% endif %}
-                                                    </div>
-
-                                                    {# Inline edit form for comment #}
-                                                    <div id="comment-edit-{{ comment.id }}" style="display:none;" class="mt-2">
-                                                        <form method="post"
-                                                              action="{{ path('comment_edit', {'id': comment.id}) }}">
-                                                            <input type="hidden" name="comment[_token]"
-                                                                   value="{{ csrf_token('comment') }}">
-                                                            <input type="hidden" name="comment[post]"
-                                                                   value="{{ post.id }}">
-                                                            <input type="hidden" name="comment[parentComment]"
-                                                                   value="">
-                                                            <div class="d-flex gap-2">
-                                                                <input type="text" name="comment[content]"
-                                                                       class="form-control form-control-sm"
-                                                                       value="{{ comment.content }}" required>
-                                                                <button type="submit"
-                                                                        class="btn btn-sm btn-success">Save</button>
-                                                                <button type="button"
-                                                                        class="btn btn-sm btn-outline-secondary"
-                                                                        onclick="toggleEditComment({{ comment.id }})">
-                                                                    Cancel
-                                                                </button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-
-                                                    {# ── Inline reply form ── #}
-                                                    <div id="reply-form-{{ comment.id }}" style="display:none;" class="mt-2">
-                                                        <form method="post" action="{{ path('comment_new') }}">
-                                                            <input type="hidden" name="comment[_token]"
-                                                                   value="{{ csrf_token('comment') }}">
-                                                            <input type="hidden" name="comment[post]"
-                                                                   value="{{ post.id }}">
-                                                            <input type="hidden" name="comment[parentComment]"
-                                                                   value="{{ comment.id }}">
-                                                            <div class="d-flex gap-2 align-items-center">
-                                                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-                                                                     style="width:28px;height:28px;font-size:.65rem;">
-                                                                    {{ currentUser.initials }}
-                                                                </div>
-                                                                <input type="text" name="comment[content]"
-                                                                       class="form-control form-control-sm"
-                                                                       placeholder="Write a reply…" required
-                                                                       id="reply-input-{{ comment.id }}">
-                                                                <button type="submit"
-                                                                        class="btn btn-sm btn-primary">Reply</button>
-                                                                <button type="button"
-                                                                        class="btn btn-sm btn-outline-secondary"
-                                                                        onclick="toggleReplyForm({{ comment.id }})">
-                                                                    ✕
-                                                                </button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-
-                                                    {# ── Replies indented ─── #}
-                                                    {% if comment.replies|length > 0 %}
-                                                        <div class="replies-container mt-2 ms-2 ps-3 border-start border-2">
-                                                            {% for reply in comment.replies %}
-                                                                {% if not reply.deleted %}
-                                                                    <div class="d-flex gap-2 mb-2"
-                                                                         id="comment-{{ reply.id }}">
-                                                                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-                                                                             style="width:28px;height:28px;font-size:.65rem;">
-                                                                            {{ reply.author.initials }}
-                                                                        </div>
-                                                                        <div class="flex-grow-1">
-                                                                            <div class="bg-light rounded px-3 py-2">
-                                                                                <div class="fw-semibold small">
-                                                                                    {{ reply.author.fullName }}
-                                                                                    {% if reply.edited %}
-                                                                                        <span class="text-muted fw-normal">(edited)</span>
-                                                                                    {% endif %}
-                                                                                </div>
-                                                                                <div id="comment-content-{{ reply.id }}">
-                                                                                    {{ reply.content }}
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="d-flex gap-3 mt-1 ms-1">
-                                                                                <small class="text-muted">
-                                                                                    {{ reply.createdAt|date('M d, H:i') }}
-                                                                                </small>
-                                                                                {% if reply.author.id == currentUser.id %}
-                                                                                    <button class="btn btn-link btn-sm p-0 text-muted small"
-                                                                                            onclick="toggleEditComment({{ reply.id }})">
-                                                                                        Edit
-                                                                                    </button>
-                                                                                    <form method="post"
-                                                                                          action="{{ path('comment_delete', {'id': reply.id}) }}"
-                                                                                          onsubmit="return confirm('Delete this reply?');">
-                                                                                        <input type="hidden" name="_token"
-                                                                                               value="{{ csrf_token('delete' ~ reply.id) }}">
-                                                                                        <button type="submit"
-                                                                                                class="btn btn-link btn-sm p-0 text-danger small">
-                                                                                            Delete
-                                                                                        </button>
-                                                                                    </form>
-                                                                                {% endif %}
-                                                                            </div>
-
-                                                                            {# Inline edit form for reply #}
-                                                                            <div id="comment-edit-{{ reply.id }}"
-                                                                                 style="display:none;" class="mt-2">
-                                                                                <form method="post"
-                                                                                      action="{{ path('comment_edit', {'id': reply.id}) }}">
-                                                                                    <input type="hidden"
-                                                                                           name="comment[_token]"
-                                                                                           value="{{ csrf_token('comment') }}">
-                                                                                    <input type="hidden"
-                                                                                           name="comment[post]"
-                                                                                           value="{{ post.id }}">
-                                                                                    <input type="hidden"
-                                                                                           name="comment[parentComment]"
-                                                                                           value="{{ comment.id }}">
-                                                                                    <div class="d-flex gap-2">
-                                                                                        <input type="text"
-                                                                                               name="comment[content]"
-                                                                                               class="form-control form-control-sm"
-                                                                                               value="{{ reply.content }}"
-                                                                                               required>
-                                                                                        <button type="submit"
-                                                                                                class="btn btn-sm btn-success">
-                                                                                            Save
-                                                                                        </button>
-                                                                                        <button type="button"
-                                                                                                class="btn btn-sm btn-outline-secondary"
-                                                                                                onclick="toggleEditComment({{ reply.id }})">
-                                                                                            Cancel
-                                                                                        </button>
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </div>
-                                                    {% endif %}
-
-                                                </div>{# end flex-grow-1 #}
-                                            </div>{# end d-flex (top-level comment) #}
-                                        </div>{# end .comment-thread #}
-                                    {% endif %}
-                                {% endfor %}
-
-                                {# ── New top-level comment form ───────────── #}
-                                <div class="d-flex gap-2 mt-3 align-items-center">
-                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-                                         style="width:32px;height:32px;font-size:.7rem;">
-                                        {{ currentUser.initials }}
-                                    </div>
-                                    <form method="post" action="{{ path('comment_new') }}"
-                                          class="flex-grow-1 d-flex gap-2">
-                                        <input type="hidden" name="comment[_token]"
-                                               value="{{ csrf_token('comment') }}">
-                                        <input type="hidden" name="comment[post]" value="{{ post.id }}">
-                                        <input type="hidden" name="comment[parentComment]" value="">
-                                        <input type="text" name="comment[content]"
-                                               class="form-control form-control-sm"
-                                               placeholder="Write a comment…" required>
-                                        <button type="submit" class="btn btn-sm btn-primary">Send</button>
-                                    </form>
-                                </div>
-
-                            </div>{# end .comments-section #}
-                        </div>{# end .card-body #}
-                    </div>{# end .card #}
-                {% endfor %}
-            {% else %}
-                <div class="alert alert-info text-center">
-                    No posts yet. Be the first to post!
-                </div>
+            </div>{# end ss-post-card #}
             {% endif %}
+        {% endfor %}
+    {% endif %}
 
+</div>{# end ss-feed-inner #}
+</div>{# end ss-feed-wrap #}
+
+{# ── Delete confirm modals ── #}
+{% for post in posts %}
+    {% if not post.isDeleted and currentUser.id == post.author.id %}
+    <div class="ss-confirm-overlay" id="delete-confirm-{{ post.id }}">
+        <div class="ss-confirm-box">
+            <div class="ss-confirm-title">Delete Post</div>
+            <div class="ss-confirm-sub">Are you sure? This action cannot be undone.</div>
+            <div class="ss-confirm-btns">
+                <button class="ss-confirm-cancel" onclick="hideConfirm({{ post.id }})">Cancel</button>
+                <form action="{{ path('post_delete', {id: post.id}) }}" method="post" style="display:inline;">
+                    <input type="hidden" name="_method" value="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                    <button type="submit" class="ss-confirm-delete">Delete</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+    {% endif %}
+{% endfor %}
+
 {% endblock %}
 
 {% block javascripts %}
-{{ parent() }}
-<style>
-    .reaction-btn {
-        font-size: .78rem;
-        padding: .25rem .6rem;
-        border-radius: 20px;
-        transition: transform .1s;
-    }
-    .reaction-btn:hover  { transform: scale(1.1); }
-    .reaction-btn.active { font-weight: 600; }
-
-    .replies-container { border-color: #dee2e6 !important; }
-
-    .comment-thread .btn-link {
-        text-decoration: none;
-        font-size: .8rem;
-    }
-    .comment-thread .btn-link:hover { text-decoration: underline; }
-</style>
 <script>
-    function toggleEditPost(postId) {
-        const content  = document.getElementById('post-content-' + postId);
-        const editForm = document.getElementById('post-edit-'    + postId);
-        const show     = editForm.style.display === 'none';
-        editForm.style.display = show ? 'block' : 'none';
-        content.style.display  = show ? 'none'  : 'block';
-    }
+/* ── Visibility selector (create post) ── */
+function setVisibility(btn, value) {
+    document.querySelectorAll('#createPostCard .ss-vis-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('visibilityInput').value = value;
+}
 
-    function toggleEditComment(commentId) {
-        const content  = document.getElementById('comment-content-' + commentId);
-        const editForm = document.getElementById('comment-edit-'    + commentId);
-        const show     = editForm.style.display === 'none';
-        editForm.style.display = show ? 'block' : 'none';
-        content.style.display  = show ? 'none'  : 'block';
-        if (show) {
-            const input = editForm.querySelector('input[name$="[content]"]');
-            if (input) input.focus();
-        }
-    }
+/* ── Visibility selector (edit post) ── */
+function setVisibilityEdit(btn, value, postId) {
+    const form = document.getElementById('post-edit-' + postId);
+    form.querySelectorAll('.ss-vis-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('editVis-' + postId).value = value;
+}
 
-    function toggleReplyForm(commentId) {
-        // Close every other open reply form first
-        document.querySelectorAll('[id^="reply-form-"]').forEach(function (el) {
-            if (el.id !== 'reply-form-' + commentId) el.style.display = 'none';
-        });
-        const form = document.getElementById('reply-form-' + commentId);
-        const show = form.style.display === 'none';
-        form.style.display = show ? 'block' : 'none';
-        if (show) {
-            const input = document.getElementById('reply-input-' + commentId);
-            if (input) input.focus();
-        }
+/* ── Toggle post inline edit ── */
+function toggleEditPost(postId) {
+    const view = document.getElementById('post-view-' + postId);
+    const editForm = document.getElementById('post-edit-' + postId);
+    view.classList.toggle('hidden');
+    editForm.classList.toggle('show');
+}
+
+/* ── Toggle comment inline edit ── */
+function toggleEditComment(commentId) {
+    const textEl = document.getElementById('comment-text-' + commentId);
+    const editEl = document.getElementById('comment-edit-' + commentId);
+    if (textEl) textEl.style.display = textEl.style.display === 'none' ? '' : 'none';
+    editEl.classList.toggle('show');
+}
+
+/* ── Toggle comments section ── */
+function toggleComments(postId) {
+    const section = document.getElementById('comments-section-' + postId);
+    if (section.style.display === 'none') {
+        section.style.display = 'block';
+    } else {
+        section.style.display = 'none';
     }
+}
+
+/* ── Toggle reply form ── */
+function toggleReplyForm(commentId) {
+    // Close all other open reply forms first
+    document.querySelectorAll('[id^="reply-form-"]').forEach(el => {
+        if (el.id !== 'reply-form-' + commentId) el.style.display = 'none';
+    });
+    const form = document.getElementById('reply-form-' + commentId);
+    if (form.style.display === 'none') {
+        form.style.display = 'flex';
+        const input = document.getElementById('reply-input-' + commentId);
+        if (input) input.focus();
+    } else {
+        form.style.display = 'none';
+    }
+}
+
+/* ── Toggle replies block ── */
+function toggleReplies(commentId) {
+    const block  = document.getElementById('replies-block-' + commentId);
+    const toggle = document.getElementById('replies-toggle-' + commentId);
+    if (block.style.display === 'none') {
+        block.style.display = 'block';
+        toggle.textContent = toggle.textContent.replace('▶', '▼').replace('Show', 'Hide');
+    } else {
+        block.style.display = 'none';
+        toggle.textContent = toggle.textContent.replace('▼', '▶').replace('Hide', 'Show');
+    }
+}
+
+/* ── Delete confirm modal ── */
+function confirmDelete(postId) {
+    document.getElementById('delete-confirm-' + postId).classList.add('show');
+}
+function hideConfirm(postId) {
+    document.getElementById('delete-confirm-' + postId).classList.remove('show');
+}
+document.querySelectorAll('.ss-confirm-overlay').forEach(el => {
+    el.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('show');
+    });
+});
+
+/* ── Media preview ── */
+function previewMedia(input) {
+    const preview = document.getElementById('mediaPreview');
+    const thumbs  = document.getElementById('mediaThumbs');
+    thumbs.innerHTML = '';
+
+    if (input.files.length === 0) {
+        preview.classList.remove('show');
+        return;
+    }
+    preview.classList.add('show');
+
+    Array.from(input.files).forEach(file => {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'position:relative;display:inline-block;';
+
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.className = 'ss-media-thumb';
+            wrap.appendChild(img);
+        } else {
+            const icon = document.createElement('div');
+            icon.style.cssText = 'width:72px;height:72px;background:#f3f4f6;border-radius:8px;border:1.5px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:24px;';
+            icon.textContent = '🎥';
+            wrap.appendChild(icon);
+        }
+        thumbs.appendChild(wrap);
+    });
+}
+
+/* ── Search filter (client-side highlight) ── */
+document.getElementById('searchInput').addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    document.querySelectorAll('.ss-post-card').forEach(card => {
+        const text = card.querySelector('.ss-post-content')?.textContent.toLowerCase() ?? '';
+        card.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+});
 </script>
 {% endblock %}
