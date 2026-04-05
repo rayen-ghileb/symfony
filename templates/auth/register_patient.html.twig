@@ -1,0 +1,185 @@
+{% extends 'base_auth.html.twig' %}
+
+{% block title %}Patient Registration - Safe Space{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <div class="auth-card" style="max-width: 800px;">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary">Patient Registration</h2>
+            <p class="text-muted">Create your account to access mental health services</p>
+        </div>
+
+        <!-- Registration Form -->
+        {{ form_start(form, { 'attr': { 'class': 'registration-form' } }) }}
+        {# Display all form errors at the top #}
+        {% if form.vars.errors|length > 0 %}
+            <div class="alert alert-danger">
+                {{ form_errors(form) }}
+            </div>
+        {% endif %}
+        <!-- Personal Information Section -->
+        <div class="section mb-4">
+            <h4 class="h6 fw-semibold text-primary border-bottom pb-2 mb-3">
+                Personal Information
+            </h4>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.fullName, 'Full Name *', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.fullName, { 'attr': { 
+                        'class': 'form-control',
+                        'placeholder': 'Enter your full name'
+                    } }) }}
+                    {{ form_errors(form.fullName) }}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.email, 'Email *', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.email, { 'attr': { 
+                        'class': 'form-control',
+                        'placeholder': 'Enter your email'
+                    } }) }}
+                    {{ form_errors(form.email) }}
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.plainPassword, 'Password *', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.plainPassword, { 'attr': { 
+                        'class': 'form-control',
+                        'placeholder': 'Create a password'
+                    } }) }}
+                    <div class="form-text text-muted small">
+                        Min. 8 characters with uppercase, lowercase, number and special character (@$!%*?&)
+                    </div>
+                    {{ form_errors(form.plainPassword) }}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.phoneNumber, 'Phone', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.phoneNumber, { 'attr': { 
+                        'class': 'form-control',
+                        'placeholder': 'Enter your phone number'
+                    } }) }}
+                    {{ form_errors(form.phoneNumber) }}
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.gender, 'Gender', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.gender, { 'attr': { 'class': 'form-select' } }) }}
+                    {{ form_errors(form.gender) }}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.dateOfBirth, 'Date of Birth', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.dateOfBirth, { 'attr': { 'class': 'form-control' } }) }}
+                    {{ form_errors(form.dateOfBirth) }}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                {{ form_label(form.address, 'Address', { 'label_attr': { 'class': 'form-label' } }) }}
+                {{ form_widget(form.address, { 'attr': { 
+                    'class': 'form-control',
+                    'rows': 3,
+                    'placeholder': 'Enter your address'
+                } }) }}
+                {{ form_errors(form.address) }}
+            </div>
+        </div>
+        
+        <!-- Emergency Contact Section -->
+        <div class="section mb-4">
+            <h4 class="h6 fw-semibold text-primary border-bottom pb-2 mb-3">
+                Emergency Contact
+            </h4>
+            
+            <div class="mb-3">
+                {{ form_label(form.emergencyContact, 'Emergency Contact', { 'label_attr': { 'class': 'form-label' } }) }}
+                {{ form_widget(form.emergencyContact, { 
+                    'attr': { 
+                        'class': 'form-control',
+                        'placeholder': 'e.g., John Doe - 555-123-4567'
+                    } 
+                }) }}
+                <div class="form-text text-muted small">
+                    Please provide name and phone number of your emergency contact (Format: Name - Phone)
+                </div>
+                {{ form_errors(form.emergencyContact) }}
+            </div>
+        </div>
+        
+        <!-- Terms and Conditions Section -->
+        <div class="section mb-4">
+            <h4 class="h6 fw-semibold text-primary border-bottom pb-2 mb-3">
+                Terms and Conditions
+            </h4>
+            
+            <div class="mb-3">
+                <div class="form-check">
+                    {{ form_widget(form.privacyConsent, { 'attr': { 'class': 'form-check-input' } }) }}
+                    {{ form_label(form.privacyConsent, 'I agree to the Privacy Policy and Terms of Service', { 'label_attr': { 'class': 'form-check-label' } }) }}
+                </div>
+                {{ form_errors(form.privacyConsent) }}
+            </div>
+            
+            <div class="mb-3">
+                <div class="form-check">
+                    {{ form_widget(form.ageConsent, { 'attr': { 'class': 'form-check-input' } }) }}
+                    {{ form_label(form.ageConsent, 'I confirm that I am 18 years or older', { 'label_attr': { 'class': 'form-check-label' } }) }}
+                </div>
+                {{ form_errors(form.ageConsent) }}
+            </div>
+            
+            <div class="terms-box bg-light p-3 rounded border" style="max-height: 200px; overflow-y: auto;">
+                <small class="text-muted">
+                    <strong>TERMS AND CONDITIONS</strong><br><br>
+                    By registering as a patient, you agree to:<br>
+                    1. Provide accurate and truthful information<br>
+                    2. Respect the confidentiality of all communications<br>
+                    3. Use the platform for legitimate mental health purposes only<br>
+                    4. Not share your account credentials with others<br>
+                    5. Report any technical issues to support<br><br>
+                    
+                    <strong>PRIVACY POLICY</strong><br><br>
+                    Your personal information will be:<br>
+                    - Used only for providing healthcare services<br>
+                    - Stored securely in compliance with data protection laws<br>
+                    - Never shared with third parties without your consent<br>
+                    - Accessible only to authorized healthcare providers<br><br>
+                    
+                    <strong>MEDICAL DISCLAIMER</strong><br><br>
+                    This platform is for consultation purposes only and does not replace 
+                    emergency medical services. In case of emergency, please contact your 
+                    local emergency services immediately.
+                </small>
+            </div>
+        </div>
+        
+        <!-- Buttons -->
+        <div class="d-flex gap-3 justify-content-center mb-3">
+            <button type="submit" class="btn btn-primary px-4 py-2">
+                Register
+            </button>
+            <a href="{{ path('app_login') }}" class="btn btn-outline-secondary px-4 py-2">
+                Cancel
+            </a>
+        </div>
+        
+        <!-- Login Link -->
+        <div class="text-center">
+            <p class="mb-0">
+                Already have an account? 
+                <a href="{{ path('app_login') }}" class="text-decoration-none">Sign In</a>
+            </p>
+        </div>
+        
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

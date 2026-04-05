@@ -1,0 +1,37 @@
+{% extends 'base_auth.html.twig' %}
+
+{% block title %}Choose Registration Type - Safe Space{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <div class="auth-card" style="max-width: 500px;">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary">Join Safe Space</h2>
+            <p class="text-muted">Choose how you want to use our platform</p>
+        </div>
+        
+        <div class="d-grid gap-3">
+            <a href="{{ path('app_register_patient') }}" class="btn btn-primary btn-lg py-3">
+                <i class="bi bi-person-fill me-2"></i>
+                Register as Patient
+                <small class="d-block text-white-50">Get mental health support</small>
+            </a>
+            
+            <a href="{{ path('app_register_psychiatrist') }}" class="btn btn-outline-primary btn-lg py-3">
+                <i class="bi bi-briefcase-fill me-2"></i>
+                Register as Psychiatrist
+                <small class="d-block text-muted">Provide professional mental health services</small>
+            </a>
+            
+            <hr class="my-3">
+            
+            <div class="text-center">
+                <p class="mb-0">
+                    Already have an account? 
+                    <a href="{{ path('app_login') }}" class="text-decoration-none">Sign In</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

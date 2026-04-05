@@ -1,0 +1,180 @@
+{% extends 'base_auth.html.twig' %}
+
+{% block title %}Psychiatrist Registration - Safe Space{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <div class="auth-card" style="max-width: 800px;">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary">Psychiatrist Registration</h2>
+            <p class="text-muted">Join our network of mental health professionals</p>
+        </div>
+
+        {{ form_start(form, { 'attr': { 'class': 'registration-form' } }) }}
+        
+        <!-- Personal Information Section -->
+        <div class="section mb-4">
+            <h4 class="h6 fw-semibold text-primary border-bottom pb-2 mb-3">
+                Personal Information
+            </h4>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.fullName, 'Full Name *', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.fullName, { 'attr': { 'class': 'form-control', 'placeholder': 'Enter your full name' } }) }}
+                    {{ form_errors(form.fullName) }}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.email, 'Email *', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.email, { 'attr': { 'class': 'form-control', 'placeholder': 'Enter your email' } }) }}
+                    {{ form_errors(form.email) }}
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.plainPassword, 'Password *', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.plainPassword, { 'attr': { 
+                        'class': 'form-control',
+                        'placeholder': 'Create a password'
+                    } }) }}
+                    <div class="form-text text-muted small">
+                        Min. 8 characters with uppercase, lowercase, number and special character (@$!%*?&)
+                    </div>
+                    {{ form_errors(form.plainPassword) }}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.phoneNumber, 'Phone', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.phoneNumber, { 'attr': { 'class': 'form-control', 'placeholder': 'Enter your phone number' } }) }}
+                    {{ form_errors(form.phoneNumber) }}
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.gender, 'Gender', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.gender, { 'attr': { 'class': 'form-select' } }) }}
+                    {{ form_errors(form.gender) }}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.dateOfBirth, 'Date of Birth', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.dateOfBirth, { 'attr': { 'class': 'form-control' } }) }}
+                    {{ form_errors(form.dateOfBirth) }}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                {{ form_label(form.address, 'Address', { 'label_attr': { 'class': 'form-label' } }) }}
+                {{ form_widget(form.address, { 'attr': { 'class': 'form-control', 'rows': 3, 'placeholder': 'Enter your address' } }) }}
+                {{ form_errors(form.address) }}
+            </div>
+        </div>
+        
+        <!-- Professional Information Section -->
+        <div class="section mb-4">
+            <h4 class="h6 fw-semibold text-primary border-bottom pb-2 mb-3">
+                Professional Information
+            </h4>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.specialization, 'Specialization *', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.specialization, { 'attr': { 'class': 'form-control', 'placeholder': 'e.g., Clinical Psychology' } }) }}
+                    {{ form_errors(form.specialization) }}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.licenseNumber, 'License Number *', { 'label_attr': { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.licenseNumber, { 'attr': { 'class': 'form-control', 'placeholder': 'Professional license number' } }) }}
+                    {{ form_errors(form.licenseNumber) }}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Emergency Contact -->
+        <div class="section mb-4">
+            <h4 class="h6 fw-semibold text-primary border-bottom pb-2 mb-3">
+                Emergency Contact
+            </h4>
+            
+            <div class="mb-3">
+                {{ form_label(form.emergencyContact, 'Emergency Contact', { 'label_attr': { 'class': 'form-label' } }) }}
+                {{ form_widget(form.emergencyContact, { 
+                    'attr': { 
+                        'class': 'form-control',
+                        'placeholder': 'e.g., John Doe - 555-123-4567'
+                    } 
+                }) }}
+                <div class="form-text text-muted small">
+                    Please provide name and phone number of your emergency contact
+                </div>
+                {{ form_errors(form.emergencyContact) }}
+            </div>
+        </div>
+        
+        <!-- Professional Verification -->
+        <div class="section mb-4">
+            <h4 class="h6 fw-semibold text-primary border-bottom pb-2 mb-3">
+                Terms and Professional Verification
+            </h4>
+            
+            <div class="mb-2">
+                <div class="form-check">
+                    {{ form_widget(form.privacyConsent, { 'attr': { 'class': 'form-check-input' } }) }}
+                    {{ form_label(form.privacyConsent, 'I agree to the Privacy Policy and Terms of Service', { 'label_attr': { 'class': 'form-check-label' } }) }}
+                </div>
+                {{ form_errors(form.privacyConsent) }}
+            </div>
+            
+            <div class="mb-2">
+                <div class="form-check">
+                    {{ form_widget(form.professionalConsent, { 'attr': { 'class': 'form-check-input' } }) }}
+                    {{ form_label(form.professionalConsent, 'I confirm that my professional credentials are valid and accurate', { 'label_attr': { 'class': 'form-check-label' } }) }}
+                </div>
+                {{ form_errors(form.professionalConsent) }}
+            </div>
+            
+            <div class="mb-3">
+                <div class="form-check">
+                    {{ form_widget(form.ageConsent, { 'attr': { 'class': 'form-check-input' } }) }}
+                    {{ form_label(form.ageConsent, 'I confirm that I am 18 years or older', { 'label_attr': { 'class': 'form-check-label' } }) }}
+                </div>
+                {{ form_errors(form.ageConsent) }}
+            </div>
+            
+            <div class="terms-box bg-light p-3 rounded border" style="max-height: 150px; overflow-y: auto;">
+                <small class="text-muted">
+                    <strong>PROFESSIONAL VERIFICATION</strong><br><br>
+                    As a mental health professional registering on Safe Space, you agree to:<br>
+                    1. Provide valid and current professional credentials<br>
+                    2. Maintain patient confidentiality at all times<br>
+                    3. Follow ethical guidelines of your profession<br>
+                    4. Use the platform only for legitimate mental health services<br>
+                    5. Report any ethical concerns to platform administrators<br><br>
+                    Your license information will be verified before account activation.
+                </small>
+            </div>
+        </div>
+        
+        <!-- Buttons -->
+        <div class="d-flex gap-3 justify-content-center mb-3">
+            <button type="submit" class="btn btn-primary px-4 py-2">Register</button>
+            <a href="{{ path('app_login') }}" class="btn btn-outline-secondary px-4 py-2">Cancel</a>
+        </div>
+        
+        <!-- Login Link -->
+        <div class="text-center">
+            <p class="mb-0">
+                Already have an account? 
+                <a href="{{ path('app_login') }}" class="text-decoration-none">Sign In</a>
+            </p>
+        </div>
+        
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

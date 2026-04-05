@@ -1,0 +1,480 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Feed - Safe Space{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+
+            {# ── Create Post Box ─────────────────────────────────────────── #}
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-3">Create a Post</h5>
+                    <form method="post" action="{{ path('post_new') }}" enctype="multipart/form-data">
+                        <input type="hidden" name="post[_token]" value="{{ csrf_token('post') }}">
+                        <div class="mb-2">
+                            <textarea
+                                name="post[content]"
+                                class="form-control"
+                                rows="3"
+                                placeholder="What's on your mind?"
+                                required
+                            ></textarea>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label mb-1 small text-muted">Add pictures or videos</label>
+                            <input
+                                type="file"
+                                name="post[mediaFiles][]"
+                                class="form-control form-control-sm"
+                                accept="image/*,video/*"
+                                multiple
+                            >
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center gap-2">
+                            <select name="post[visibility]" class="form-select form-select-sm w-auto">
+                                <option value="PUBLIC">🌍 Public</option>
+                                <option value="PATIENTS_ONLY" selected>👥 Patients Only</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm px-4">Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {# ── Posts Feed ──────────────────────────────────────────────── #}
+            {% if posts|length > 0 %}
+                {% for post in posts %}
+                    {% set userReaction    = post.getUserReaction(currentUser) %}
+                    {% set reactionCounts  = post.getReactionCounts() %}
+
+                    <div class="card mb-4 shadow-sm" id="post-{{ post.id }}">
+                        <div class="card-body">
+
+                            {# ── Post Header ─────────────────────────────── #}
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold"
+                                         style="width:40px;height:40px;flex-shrink:0;font-size:.85rem;">
+                                        {{ post.author.initials }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-semibold lh-1">{{ post.author.fullName }}</div>
+                                        <small class="text-muted">
+                                            {{ post.createdAt|date('M d, H:i') }}
+                                            &nbsp;·&nbsp;
+                                            {% if post.visibility == 'PUBLIC' %}🌍{% else %}👥{% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+
+                                {% if post.author.id == currentUser.id %}
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-outline-secondary"
+                                                onclick="toggleEditPost({{ post.id }})">Edit</button>
+                                        <form method="post" action="{{ path('post_delete', {'id': post.id}) }}"
+                                              onsubmit="return confirm('Delete this post?');">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('delete' ~ post.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            {# ── Post Content (view mode) ─────────────────── #}
+                            <div id="post-content-{{ post.id }}">
+                                <p class="mb-2">{{ post.content|nl2br }}</p>
+                                {% if post.mediaList|length > 0 %}
+                                    <div class="mt-2">
+                                        {% for media in post.mediaList %}
+                                            {% if media.mediaType == 'VIDEO' %}
+                                                <video controls class="w-100 rounded border mb-2" preload="metadata">
+                                                    <source src="{{ media.mediaUrl }}">
+                                                </video>
+                                            {% else %}
+                                                <img src="{{ media.mediaUrl }}" alt="Post image"
+                                                     class="img-fluid rounded border mb-2">
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            {# ── Post Edit Form (hidden by default) ────────── #}
+                            <div id="post-edit-{{ post.id }}" style="display:none;" class="mb-3">
+                                <form method="post" action="{{ path('post_edit', {'id': post.id}) }}"
+                                      enctype="multipart/form-data">
+                                    <input type="hidden" name="post[_token]" value="{{ csrf_token('post') }}">
+                                    <input type="hidden" name="post[visibility]" value="{{ post.visibility }}">
+                                    <textarea name="post[content]" class="form-control mb-2" rows="3"
+                                              required>{{ post.content }}</textarea>
+                                    <label class="form-label small text-muted mb-1">Replace media (optional)</label>
+                                    <input type="file" name="post[mediaFiles][]"
+                                           class="form-control form-control-sm mb-2"
+                                           accept="image/*,video/*" multiple>
+                                    {% if post.mediaList|length > 0 %}
+                                        {% for media in post.mediaList %}
+                                            <input type="hidden"
+                                                   name="post[mediaList][{{ loop.index0 }}][mediaUrl]"
+                                                   value="{{ media.mediaUrl }}">
+                                            <input type="hidden"
+                                                   name="post[mediaList][{{ loop.index0 }}][mediaType]"
+                                                   value="{{ media.mediaType }}">
+                                            <input type="hidden"
+                                                   name="post[mediaList][{{ loop.index0 }}][displayOrder]"
+                                                   value="{{ media.displayOrder }}">
+                                        {% endfor %}
+                                    {% else %}
+                                        <input type="hidden" name="post[mediaList][0][mediaUrl]" value="">
+                                        <input type="hidden" name="post[mediaList][0][mediaType]" value="IMAGE">
+                                        <input type="hidden" name="post[mediaList][0][displayOrder]" value="0">
+                                    {% endif %}
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-sm btn-success">Save</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                onclick="toggleEditPost({{ post.id }})">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            {# ── Reaction Buttons with Counts (3 types only) ── #}
+                            <div class="d-flex flex-wrap gap-1 mt-3 mb-2">
+                                {% for type, emoji in reactionEmojis %}
+                                    {% set count    = reactionCounts[type] ?? 0 %}
+                                    {% set isActive = (userReaction == type) %}
+
+                                    {% if isActive %}
+                                        {# Active → clicking removes the reaction #}
+                                        <form method="post"
+                                              action="{{ path('reaction_delete', {'postId': post.id, 'userId': currentUser.id}) }}">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('delete' ~ post.id ~ '_' ~ currentUser.id) }}">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-primary reaction-btn active"
+                                                    title="Remove reaction">
+                                                {{ emoji }}
+                                                <span class="reaction-label">
+                                                    {{ type|lower|replace({'_': ' '})|capitalize }}
+                                                </span>
+                                                {% if count > 0 %}
+                                                    <span class="badge bg-white text-primary ms-1">{{ count }}</span>
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        {# Inactive → clicking adds / switches to this reaction #}
+                                        <form method="post" action="{{ path('reaction_new') }}">
+                                            <input type="hidden" name="reaction[_token]"
+                                                   value="{{ csrf_token('reaction') }}">
+                                            <input type="hidden" name="reaction[post]" value="{{ post.id }}">
+                                            <input type="hidden" name="reaction[reactionType]" value="{{ type }}">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-secondary reaction-btn"
+                                                    title="{{ type|lower|replace({'_': ' '})|capitalize }}">
+                                                {{ emoji }}
+                                                <span class="reaction-label">
+                                                    {{ type|lower|replace({'_': ' '})|capitalize }}
+                                                </span>
+                                                {% if count > 0 %}
+                                                    <span class="badge bg-secondary ms-1">{{ count }}</span>
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+
+                            {# ── Comments & Replies Section ───────────────── #}
+                            <hr class="my-2">
+                            <div class="comments-section">
+                                <div class="fw-semibold mb-2 small text-muted">
+                                    {{ post.comments|length }}
+                                    comment{{ post.comments|length != 1 ? 's' : '' }}
+                                </div>
+
+                                {% for comment in post.comments %}
+                                    {% if not comment.deleted and comment.parentComment is null %}
+                                        <div class="comment-thread mb-2" id="comment-{{ comment.id }}">
+
+                                            {# ── Top-level comment ────────── #}
+                                            <div class="d-flex gap-2">
+                                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+                                                     style="width:32px;height:32px;font-size:.7rem;">
+                                                    {{ comment.author.initials }}
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="bg-light rounded px-3 py-2">
+                                                        <div class="fw-semibold small">
+                                                            {{ comment.author.fullName }}
+                                                            {% if comment.edited %}
+                                                                <span class="text-muted fw-normal">(edited)</span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div id="comment-content-{{ comment.id }}">
+                                                            {{ comment.content }}
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="d-flex gap-3 mt-1 ms-1">
+                                                        <small class="text-muted">
+                                                            {{ comment.createdAt|date('M d, H:i') }}
+                                                        </small>
+                                                        <button class="btn btn-link btn-sm p-0 text-muted small"
+                                                                onclick="toggleReplyForm({{ comment.id }})">
+                                                            Reply
+                                                        </button>
+                                                        {% if comment.author.id == currentUser.id %}
+                                                            <button class="btn btn-link btn-sm p-0 text-muted small"
+                                                                    onclick="toggleEditComment({{ comment.id }})">
+                                                                Edit
+                                                            </button>
+                                                            <form method="post"
+                                                                  action="{{ path('comment_delete', {'id': comment.id}) }}"
+                                                                  onsubmit="return confirm('Delete this comment?');">
+                                                                <input type="hidden" name="_token"
+                                                                       value="{{ csrf_token('delete' ~ comment.id) }}">
+                                                                <button type="submit"
+                                                                        class="btn btn-link btn-sm p-0 text-danger small">
+                                                                    Delete
+                                                                </button>
+                                                            </form>
+                                                        {% endif %}
+                                                    </div>
+
+                                                    {# Inline edit form for comment #}
+                                                    <div id="comment-edit-{{ comment.id }}" style="display:none;" class="mt-2">
+                                                        <form method="post"
+                                                              action="{{ path('comment_edit', {'id': comment.id}) }}">
+                                                            <input type="hidden" name="comment[_token]"
+                                                                   value="{{ csrf_token('comment') }}">
+                                                            <input type="hidden" name="comment[post]"
+                                                                   value="{{ post.id }}">
+                                                            <input type="hidden" name="comment[parentComment]"
+                                                                   value="">
+                                                            <div class="d-flex gap-2">
+                                                                <input type="text" name="comment[content]"
+                                                                       class="form-control form-control-sm"
+                                                                       value="{{ comment.content }}" required>
+                                                                <button type="submit"
+                                                                        class="btn btn-sm btn-success">Save</button>
+                                                                <button type="button"
+                                                                        class="btn btn-sm btn-outline-secondary"
+                                                                        onclick="toggleEditComment({{ comment.id }})">
+                                                                    Cancel
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
+                                                    {# ── Inline reply form ── #}
+                                                    <div id="reply-form-{{ comment.id }}" style="display:none;" class="mt-2">
+                                                        <form method="post" action="{{ path('comment_new') }}">
+                                                            <input type="hidden" name="comment[_token]"
+                                                                   value="{{ csrf_token('comment') }}">
+                                                            <input type="hidden" name="comment[post]"
+                                                                   value="{{ post.id }}">
+                                                            <input type="hidden" name="comment[parentComment]"
+                                                                   value="{{ comment.id }}">
+                                                            <div class="d-flex gap-2 align-items-center">
+                                                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+                                                                     style="width:28px;height:28px;font-size:.65rem;">
+                                                                    {{ currentUser.initials }}
+                                                                </div>
+                                                                <input type="text" name="comment[content]"
+                                                                       class="form-control form-control-sm"
+                                                                       placeholder="Write a reply…" required
+                                                                       id="reply-input-{{ comment.id }}">
+                                                                <button type="submit"
+                                                                        class="btn btn-sm btn-primary">Reply</button>
+                                                                <button type="button"
+                                                                        class="btn btn-sm btn-outline-secondary"
+                                                                        onclick="toggleReplyForm({{ comment.id }})">
+                                                                    ✕
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
+                                                    {# ── Replies indented ─── #}
+                                                    {% if comment.replies|length > 0 %}
+                                                        <div class="replies-container mt-2 ms-2 ps-3 border-start border-2">
+                                                            {% for reply in comment.replies %}
+                                                                {% if not reply.deleted %}
+                                                                    <div class="d-flex gap-2 mb-2"
+                                                                         id="comment-{{ reply.id }}">
+                                                                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+                                                                             style="width:28px;height:28px;font-size:.65rem;">
+                                                                            {{ reply.author.initials }}
+                                                                        </div>
+                                                                        <div class="flex-grow-1">
+                                                                            <div class="bg-light rounded px-3 py-2">
+                                                                                <div class="fw-semibold small">
+                                                                                    {{ reply.author.fullName }}
+                                                                                    {% if reply.edited %}
+                                                                                        <span class="text-muted fw-normal">(edited)</span>
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                                <div id="comment-content-{{ reply.id }}">
+                                                                                    {{ reply.content }}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="d-flex gap-3 mt-1 ms-1">
+                                                                                <small class="text-muted">
+                                                                                    {{ reply.createdAt|date('M d, H:i') }}
+                                                                                </small>
+                                                                                {% if reply.author.id == currentUser.id %}
+                                                                                    <button class="btn btn-link btn-sm p-0 text-muted small"
+                                                                                            onclick="toggleEditComment({{ reply.id }})">
+                                                                                        Edit
+                                                                                    </button>
+                                                                                    <form method="post"
+                                                                                          action="{{ path('comment_delete', {'id': reply.id}) }}"
+                                                                                          onsubmit="return confirm('Delete this reply?');">
+                                                                                        <input type="hidden" name="_token"
+                                                                                               value="{{ csrf_token('delete' ~ reply.id) }}">
+                                                                                        <button type="submit"
+                                                                                                class="btn btn-link btn-sm p-0 text-danger small">
+                                                                                            Delete
+                                                                                        </button>
+                                                                                    </form>
+                                                                                {% endif %}
+                                                                            </div>
+
+                                                                            {# Inline edit form for reply #}
+                                                                            <div id="comment-edit-{{ reply.id }}"
+                                                                                 style="display:none;" class="mt-2">
+                                                                                <form method="post"
+                                                                                      action="{{ path('comment_edit', {'id': reply.id}) }}">
+                                                                                    <input type="hidden"
+                                                                                           name="comment[_token]"
+                                                                                           value="{{ csrf_token('comment') }}">
+                                                                                    <input type="hidden"
+                                                                                           name="comment[post]"
+                                                                                           value="{{ post.id }}">
+                                                                                    <input type="hidden"
+                                                                                           name="comment[parentComment]"
+                                                                                           value="{{ comment.id }}">
+                                                                                    <div class="d-flex gap-2">
+                                                                                        <input type="text"
+                                                                                               name="comment[content]"
+                                                                                               class="form-control form-control-sm"
+                                                                                               value="{{ reply.content }}"
+                                                                                               required>
+                                                                                        <button type="submit"
+                                                                                                class="btn btn-sm btn-success">
+                                                                                            Save
+                                                                                        </button>
+                                                                                        <button type="button"
+                                                                                                class="btn btn-sm btn-outline-secondary"
+                                                                                                onclick="toggleEditComment({{ reply.id }})">
+                                                                                            Cancel
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+
+                                                </div>{# end flex-grow-1 #}
+                                            </div>{# end d-flex (top-level comment) #}
+                                        </div>{# end .comment-thread #}
+                                    {% endif %}
+                                {% endfor %}
+
+                                {# ── New top-level comment form ───────────── #}
+                                <div class="d-flex gap-2 mt-3 align-items-center">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+                                         style="width:32px;height:32px;font-size:.7rem;">
+                                        {{ currentUser.initials }}
+                                    </div>
+                                    <form method="post" action="{{ path('comment_new') }}"
+                                          class="flex-grow-1 d-flex gap-2">
+                                        <input type="hidden" name="comment[_token]"
+                                               value="{{ csrf_token('comment') }}">
+                                        <input type="hidden" name="comment[post]" value="{{ post.id }}">
+                                        <input type="hidden" name="comment[parentComment]" value="">
+                                        <input type="text" name="comment[content]"
+                                               class="form-control form-control-sm"
+                                               placeholder="Write a comment…" required>
+                                        <button type="submit" class="btn btn-sm btn-primary">Send</button>
+                                    </form>
+                                </div>
+
+                            </div>{# end .comments-section #}
+                        </div>{# end .card-body #}
+                    </div>{# end .card #}
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info text-center">
+                    No posts yet. Be the first to post!
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<style>
+    .reaction-btn {
+        font-size: .78rem;
+        padding: .25rem .6rem;
+        border-radius: 20px;
+        transition: transform .1s;
+    }
+    .reaction-btn:hover  { transform: scale(1.1); }
+    .reaction-btn.active { font-weight: 600; }
+
+    .replies-container { border-color: #dee2e6 !important; }
+
+    .comment-thread .btn-link {
+        text-decoration: none;
+        font-size: .8rem;
+    }
+    .comment-thread .btn-link:hover { text-decoration: underline; }
+</style>
+<script>
+    function toggleEditPost(postId) {
+        const content  = document.getElementById('post-content-' + postId);
+        const editForm = document.getElementById('post-edit-'    + postId);
+        const show     = editForm.style.display === 'none';
+        editForm.style.display = show ? 'block' : 'none';
+        content.style.display  = show ? 'none'  : 'block';
+    }
+
+    function toggleEditComment(commentId) {
+        const content  = document.getElementById('comment-content-' + commentId);
+        const editForm = document.getElementById('comment-edit-'    + commentId);
+        const show     = editForm.style.display === 'none';
+        editForm.style.display = show ? 'block' : 'none';
+        content.style.display  = show ? 'none'  : 'block';
+        if (show) {
+            const input = editForm.querySelector('input[name$="[content]"]');
+            if (input) input.focus();
+        }
+    }
+
+    function toggleReplyForm(commentId) {
+        // Close every other open reply form first
+        document.querySelectorAll('[id^="reply-form-"]').forEach(function (el) {
+            if (el.id !== 'reply-form-' + commentId) el.style.display = 'none';
+        });
+        const form = document.getElementById('reply-form-' + commentId);
+        const show = form.style.display === 'none';
+        form.style.display = show ? 'block' : 'none';
+        if (show) {
+            const input = document.getElementById('reply-input-' + commentId);
+            if (input) input.focus();
+        }
+    }
+</script>
+{% endblock %}
