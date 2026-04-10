@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -38,33 +39,46 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var User $user */
             $user = $this->getUser();
-            if ($user instanceof User) {
-                // FIXED: Use setAuthor instead of setAuthorId
-                $post->setAuthor($user);
-                $post->setCreatedAt(new \DateTime());
-                $post->setUpdatedAt(new \DateTime());
+            $post->setAuthor($user);
+            $post->setCreatedAt(new \DateTime());
+            $post->setUpdatedAt(new \DateTime());
 
-                try {
-                    $this->processMediaUploads($post, $form);
-                } catch (\RuntimeException $e) {
-                    $this->addFlash('danger', $e->getMessage());
-                    return $this->redirectToRoute('app_feed');
+            try {
+                $this->processMediaUploads($post, $form);
+            } catch (\RuntimeException $e) {
+                if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+                    return new JsonResponse(['success' => false, 'error' => $e->getMessage()], 422);
                 }
-
-                $em->persist($post);
-                $em->flush();
-
-                $this->addFlash('success', 'Post created successfully!');
+                $this->addFlash('danger', $e->getMessage());
                 return $this->redirectToRoute('app_feed');
             }
-            throw $this->createAccessDeniedException();
+
+            $em->persist($post);
+            $em->flush();
+
+            if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+                return new JsonResponse(['success' => true]);
+            }
+
+            $this->addFlash('success', 'Post created successfully!');
+            return $this->redirectToRoute('app_feed');
         }
 
+        // Collect validation errors
+        $errors = [];
         foreach ($form->getErrors(true) as $error) {
-            $this->addFlash('danger', $error->getMessage());
+            $errors[] = $error->getMessage();
         }
 
+        if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+            return new JsonResponse(['success' => false, 'errors' => $errors], 422);
+        }
+
+        foreach ($errors as $error) {
+            $this->addFlash('danger', $error);
+        }
         return $this->redirectToRoute('app_feed');
     }
 
@@ -77,10 +91,10 @@ class PostController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Post $post, EntityManagerInterface $em): Response
     {
-        // Check if user owns this post
+        /** @var User $user */
         $user = $this->getUser();
-        if (!$user instanceof User || $post->getAuthor()->getId() !== $user->getId()) {
-            throw $this->createAccessDeniedException('You can only edit your own posts');
+        if ($post->getAuthor()->getId() !== $user->getId()) {
+            throw $this->createAccessDeniedException('You can only edit your own posts.');
         }
 
         if ($request->isMethod('GET')) {
@@ -93,24 +107,62 @@ class PostController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $post->setUpdatedAt(new \DateTime());
 
+            // ── keepMedia pruning ──────────────────────────────────────────
+            $rawPost = $request->request->all('post');
+            if (array_key_exists('keepMedia', $rawPost)) {
+                $keepRaw = trim((string)($rawPost['keepMedia'] ?? ''));
+                $keepIds = $keepRaw !== ''
+                    ? array_filter(array_map('trim', explode(',', $keepRaw)))
+                    : [];
+
+                foreach ($post->getMediaList()->toArray() as $media) {
+                    if (!in_array((string)$media->getId(), $keepIds, true)) {
+                        $filePath = $this->getParameter('kernel.project_dir')
+                            . '/public' . $media->getMediaUrl();
+                        if (file_exists($filePath)) {
+                            unlink($filePath);
+                        }
+                        $post->removeMedia($media);
+                        $em->remove($media);
+                    }
+                }
+            }
+
             try {
                 $this->processMediaUploads($post, $form);
             } catch (\RuntimeException $e) {
+                if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+                    return new JsonResponse(['success' => false, 'error' => $e->getMessage()], 422);
+                }
                 $this->addFlash('danger', $e->getMessage());
                 return $this->redirectToRoute('app_feed');
             }
 
             $em->flush();
+
+            if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+                return new JsonResponse(['success' => true]);
+            }
+
             $this->addFlash('success', 'Post updated successfully!');
             return $this->redirectToRoute('app_feed');
         }
 
+        $errors = [];
         foreach ($form->getErrors(true) as $error) {
-            $this->addFlash('danger', $error->getMessage());
+            $errors[] = $error->getMessage();
         }
 
+        if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+            return new JsonResponse(['success' => false, 'errors' => $errors], 422);
+        }
+
+        foreach ($errors as $error) {
+            $this->addFlash('danger', $error);
+        }
         return $this->redirectToRoute('app_feed');
     }
+
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Post $post, EntityManagerInterface $em): Response
@@ -121,7 +173,7 @@ class PostController extends AbstractController
             throw $this->createAccessDeniedException('You can only delete your own posts');
         }
 
-        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $post->getId(), $request->request->get('_token'))) {
             // Soft delete instead of hard delete
             $post->setDeleted(true);
             $post->setDeletedAt(new \DateTime());

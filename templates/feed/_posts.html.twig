@@ -1,0 +1,352 @@
+{# templates/feed/_posts.html.twig #}
+{% if posts is empty %}
+    <div class="ss-empty-state">
+        <div class="ss-empty-icon-wrap"><i class="bi bi-chat-slash-fill"></i></div>
+        <div class="ss-empty-title">No posts found</div>
+        <div class="ss-empty-sub">Try a different search or filter.</div>
+    </div>
+{% else %}
+    {% for post in posts %}
+        {% if not post.isDeleted %}
+        {% set author = post.author %}
+        {% set userReaction = post.getUserReaction(currentUser) %}
+        {% set reactionCounts = post.getReactionCounts() %}
+        {% set totalReactions = post.getTotalReactions() %}
+        {% set topLevelComments = post.comments|filter(c => not c.isDeleted and c.parentComment is null) %}
+
+        <div class="ss-post-card" id="post-{{ post.id }}">
+
+            {# ── Post Header ── #}
+            <div class="ss-post-header">
+                <div class="ss-post-avatar"
+                     style="{% if author.role == 'PSYCHIATRIST' %}background:#10b981{% elseif author.role == 'ADMIN' %}background:#f59e0b{% else %}background:#4f46e5{% endif %}">
+                    {% if author.profilePicture %}
+                        <img src="{{ author.profilePicture }}" alt=""
+                             style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                    {% else %}
+                        {% set parts = author.fullName|split(' ') %}
+                        {{ parts[0]|slice(0,1)|upper }}{% if parts[1] is defined %}{{ parts[1]|slice(0,1)|upper }}{% endif %}
+                    {% endif %}
+                </div>
+                <div>
+                    <div>
+                        <span class="ss-author-name">{{ author.fullName }}</span>
+                        <span class="ss-post-time">
+                            {% set diff = "now"|date('U') - post.createdAt|date('U') %}
+                            {% if diff < 60 %}Just now
+                            {% elseif diff < 3600 %}{{ (diff / 60)|round }} min ago
+                            {% elseif diff < 86400 %}{{ (diff / 3600)|round }}h ago
+                            {% elseif diff < 604800 %}{{ (diff / 86400)|round }}d ago
+                            {% else %}{{ post.createdAt|date('M d, Y') }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="ss-author-role
+                        {% if author.role == 'PSYCHIATRIST' %}ss-author-role-psychiatrist
+                        {% elseif author.role == 'ADMIN' %}ss-author-role-admin
+                        {% else %}ss-author-role-patient{% endif %}">
+                        {{ author.role }}
+                        &nbsp;·&nbsp;
+                        <span class="ss-vis-badge ss-vis-badge-{{ post.visibility|lower }}">
+                            <i class="bi bi-{{ post.visibility == 'PUBLIC' ? 'globe2' : 'people-fill' }}"></i>
+                            {{ post.visibility == 'PUBLIC' ? 'Public' : 'Patients Only' }}
+                        </span>
+                    </div>
+                </div>
+
+                {% if currentUser.id == author.id %}
+                <div class="dropdown" style="margin-left:auto;">
+                    <button class="ss-post-menu-btn" data-bs-toggle="dropdown" aria-expanded="false">⋯</button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm"
+                        style="border-radius:12px;border:1px solid #e5e7eb;padding:6px 0;">
+                        <li>
+                            <button class="dropdown-item d-flex align-items-center gap-2"
+                                    onclick="openEditModal({{ post.id }})"
+                                    style="font-size:13px;padding:10px 16px;">
+                                <i class="bi bi-pencil-fill text-secondary"></i> Edit post
+                            </button>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li>
+                            <button class="dropdown-item d-flex align-items-center gap-2 text-danger"
+                                    onclick="confirmDelete({{ post.id }})"
+                                    style="font-size:13px;padding:10px 16px;">
+                                <i class="bi bi-trash-fill"></i> Delete post
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+
+            {# ── Post content ── #}
+            <div class="ss-post-view" id="post-view-{{ post.id }}">
+                <div class="ss-post-content">{{ post.content }}</div>
+
+                {# Media grid #}
+                {% if post.mediaList is not empty %}
+                    {% set mediaCount = post.mediaList|length %}
+                    {% if mediaCount == 1 %}{% set gridClass = 'count-1' %}
+                    {% elseif mediaCount == 2 %}{% set gridClass = 'count-2' %}
+                    {% elseif mediaCount == 3 %}{% set gridClass = 'count-3' %}
+                    {% elseif mediaCount == 4 %}{% set gridClass = 'count-4' %}
+                    {% else %}{% set gridClass = 'count-5plus' %}
+                    {% endif %}
+                    {% set displayList = mediaCount <= 4 ? post.mediaList : post.mediaList|slice(0, 4) %}
+                    {% set hiddenCount = mediaCount > 4 ? mediaCount - 4 : 0 %}
+                    <div class="ss-media-grid {{ gridClass }} mb-3">
+                        {% for media in displayList %}
+                            <div class="ss-media-cell">
+                                {% if media.mediaType == 'VIDEO' %}
+                                    <video controls><source src="{{ media.mediaUrl }}"></video>
+                                {% else %}
+                                    <img src="{{ media.mediaUrl }}" alt="Post media" loading="lazy">
+                                {% endif %}
+                                {% if loop.last and hiddenCount > 0 %}
+                                    <div class="ss-media-more-overlay">+{{ hiddenCount }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {# ── Reactions Preview ── #}
+                <div class="ss-reactions-preview">
+                    <div class="d-flex align-items-center gap-2">
+                        {% if totalReactions == 0 %}
+                            <span class="ss-no-reactions">Be the first to react</span>
+                        {% else %}
+                            <div class="ss-reaction-icons">
+                                {% if reactionCounts['LIKE'] is defined and reactionCounts['LIKE'] > 0 %}
+                                    <div class="ss-reaction-icon-wrap">👍</div>
+                                {% endif %}
+                                {% if reactionCounts['LOVE'] is defined and reactionCounts['LOVE'] > 0 %}
+                                    <div class="ss-reaction-icon-wrap">❤️</div>
+                                {% endif %}
+                                {% if reactionCounts['SUPPORT'] is defined and reactionCounts['SUPPORT'] > 0 %}
+                                    <div class="ss-reaction-icon-wrap">💙</div>
+                                {% endif %}
+                            </div>
+                            <span class="ss-reaction-count">
+                                {{ totalReactions }} reaction{% if totalReactions != 1 %}s{% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <button class="ss-comment-toggle-btn" onclick="toggleComments({{ post.id }})">
+                        {{ topLevelComments|length }} comment{% if topLevelComments|length != 1 %}s{% endif %}
+                    </button>
+                </div>
+
+                {# ── Reaction Buttons Bar ── #}
+                <div class="ss-reaction-bar">
+                    {% set reactions = [
+                        {type: 'LIKE',    emoji: '👍', label: 'Like'},
+                        {type: 'LOVE',    emoji: '❤️', label: 'Love'},
+                        {type: 'SUPPORT', emoji: '💙', label: 'Support'},
+                    ] %}
+                    {% for rxn in reactions %}
+                        {% set isActive = userReaction == rxn.type %}
+                        {% set count = reactionCounts[rxn.type] is defined ? reactionCounts[rxn.type] : 0 %}
+                        <form action="{{ isActive
+                            ? path('reaction_delete', {postId: post.id, userId: currentUser.id})
+                            : path('reaction_new') }}" method="post">
+                            {% if not isActive %}
+                                <input type="hidden" name="reaction[post]" value="{{ post.id }}">
+                                <input type="hidden" name="reaction[reactionType]" value="{{ rxn.type }}">
+                                <input type="hidden" name="reaction[_token]" value="{{ csrf_token('reaction') }}">
+                            {% else %}
+                                <input type="hidden" name="_token"
+                                       value="{{ csrf_token('delete' ~ post.id ~ '_' ~ currentUser.id) }}">
+                            {% endif %}
+                            <button type="submit" class="ss-rxn-btn {{ isActive ? 'active' : '' }}">
+                                {{ rxn.emoji }} {{ rxn.label }}
+                                {% if count > 0 %}<span class="rxn-count">{{ count }}</span>{% endif %}
+                            </button>
+                        </form>
+                    {% endfor %}
+                </div>
+            </div>{# end ss-post-view #}
+
+            {# ── Comments Section ── #}
+            <div class="ss-comments-section" id="comments-section-{{ post.id }}" style="display:none;">
+                <div class="ss-comments-header">
+                    <span class="ss-comments-title">
+                        💬 {{ topLevelComments|length }} Comment{% if topLevelComments|length != 1 %}s{% endif %}
+                    </span>
+                    <button class="ss-hide-btn" onclick="toggleComments({{ post.id }})">Hide</button>
+                </div>
+
+                {% if topLevelComments is empty %}
+                    <div class="ss-no-comments">
+                        <p>No comments yet</p>
+                        <small>Be the first to comment</small>
+                    </div>
+                {% else %}
+                    {% for comment in topLevelComments %}
+                        <div class="ss-comment" id="comment-{{ comment.id }}">
+                            <div class="ss-comment-avatar"
+                                 style="{% if comment.author.role == 'PSYCHIATRIST' %}background:#10b981{% elseif comment.author.role == 'ADMIN' %}background:#f59e0b{% else %}background:#4f46e5{% endif %}">
+                                {% set cp = comment.author.fullName|split(' ') %}
+                                {{ cp[0]|slice(0,1)|upper }}{% if cp[1] is defined %}{{ cp[1]|slice(0,1)|upper }}{% endif %}
+                            </div>
+                            <div class="ss-comment-body">
+                                <div>
+                                    <span class="ss-comment-author">{{ comment.author.fullName }}</span>
+                                    <span class="ss-comment-time">
+                                        {% set cd = "now"|date('U') - comment.createdAt|date('U') %}
+                                        {% if cd < 60 %}Just now
+                                        {% elseif cd < 3600 %}{{ (cd / 60)|round }} min ago
+                                        {% elseif cd < 86400 %}{{ (cd / 3600)|round }}h ago
+                                        {% elseif cd < 604800 %}{{ (cd / 86400)|round }}d ago
+                                        {% else %}{{ comment.createdAt|date('M d, Y') }}
+                                        {% endif %}
+                                    </span>
+                                    {% if comment.isEdited %}<span class="ss-comment-edited">(edited)</span>{% endif %}
+                                </div>
+                                <div class="ss-comment-text" id="comment-text-{{ comment.id }}">{{ comment.content }}</div>
+
+                                <div class="ss-inline-edit" id="comment-edit-{{ comment.id }}">
+                                    <form action="{{ path('comment_edit', {id: comment.id}) }}" method="post"
+                                          style="flex:1;display:flex;gap:8px;">
+                                        <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
+                                        <textarea name="comment[content]" rows="2"
+                                                  style="flex:1;border:1.5px solid #4f46e5;border-radius:10px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none;resize:none;background:#ede9fe;">{{ comment.content }}</textarea>
+                                        <div style="display:flex;flex-direction:column;gap:4px;">
+                                            <button type="submit" class="ss-inline-edit-save">Save</button>
+                                            <button type="button" class="ss-inline-edit-cancel"
+                                                    onclick="toggleEditComment({{ comment.id }})">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="ss-comment-actions">
+                                    <button class="ss-comment-action-btn ss-reply-btn"
+                                            onclick="toggleReplyForm({{ comment.id }})">Reply</button>
+                                    {% if currentUser.id == comment.author.id %}
+                                        <button class="ss-comment-action-btn ss-edit-btn"
+                                                onclick="toggleEditComment({{ comment.id }})">Edit</button>
+                                        <form action="{{ path('comment_delete', {id: comment.id}) }}" method="post"
+                                              style="display:inline;">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('delete' ~ comment.id) }}">
+                                            <button type="submit" class="ss-comment-action-btn ss-delete-btn"
+                                                    onclick="return confirm('Delete this comment?')">Delete</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        {% set replies = comment.replies|filter(r => not r.isDeleted) %}
+                        {% if replies is not empty %}
+                            <button class="ss-replies-toggle" id="replies-toggle-{{ comment.id }}"
+                                    onclick="toggleReplies({{ comment.id }})">
+                                ▶ Show replies ({{ replies|length }})
+                            </button>
+                            <div class="ss-replies-block" id="replies-block-{{ comment.id }}" style="display:none;">
+                                {% for reply in replies %}
+                                    <div class="ss-reply-indicator">
+                                        ↳ replying to {{ comment.author.fullName|split(' ')[0] }}
+                                    </div>
+                                    <div class="ss-comment" id="comment-{{ reply.id }}">
+                                        <div class="ss-comment-avatar"
+                                             style="{% if reply.author.role == 'PSYCHIATRIST' %}background:#10b981{% elseif reply.author.role == 'ADMIN' %}background:#f59e0b{% else %}background:#4f46e5{% endif %}">
+                                            {% set rp = reply.author.fullName|split(' ') %}
+                                            {{ rp[0]|slice(0,1)|upper }}{% if rp[1] is defined %}{{ rp[1]|slice(0,1)|upper }}{% endif %}
+                                        </div>
+                                        <div class="ss-comment-body">
+                                            <div>
+                                                <span class="ss-comment-author">{{ reply.author.fullName }}</span>
+                                                <span class="ss-comment-time">
+                                                    {% set rd = "now"|date('U') - reply.createdAt|date('U') %}
+                                                    {% if rd < 60 %}Just now
+                                                    {% elseif rd < 3600 %}{{ (rd / 60)|round }} min ago
+                                                    {% elseif rd < 86400 %}{{ (rd / 3600)|round }}h ago
+                                                    {% elseif rd < 604800 %}{{ (rd / 86400)|round }}d ago
+                                                    {% else %}{{ reply.createdAt|date('M d, Y') }}
+                                                    {% endif %}
+                                                </span>
+                                                {% if reply.isEdited %}<span class="ss-comment-edited">(edited)</span>{% endif %}
+                                            </div>
+                                            <div class="ss-comment-text" id="comment-text-{{ reply.id }}">{{ reply.content }}</div>
+
+                                            <div class="ss-inline-edit" id="comment-edit-{{ reply.id }}">
+                                                <form action="{{ path('comment_edit', {id: reply.id}) }}" method="post"
+                                                      style="flex:1;display:flex;gap:8px;">
+                                                    <input type="hidden" name="comment[_token]"
+                                                           value="{{ csrf_token('comment') }}">
+                                                    <textarea name="comment[content]" rows="2"
+                                                              style="flex:1;border:1.5px solid #4f46e5;border-radius:10px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none;resize:none;background:#ede9fe;">{{ reply.content }}</textarea>
+                                                    <div style="display:flex;flex-direction:column;gap:4px;">
+                                                        <button type="submit" class="ss-inline-edit-save">Save</button>
+                                                        <button type="button" class="ss-inline-edit-cancel"
+                                                                onclick="toggleEditComment({{ reply.id }})">Cancel</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                            <div class="ss-comment-actions">
+                                                {% if currentUser.id == reply.author.id %}
+                                                    <button class="ss-comment-action-btn ss-edit-btn"
+                                                            onclick="toggleEditComment({{ reply.id }})">Edit</button>
+                                                    <form action="{{ path('comment_delete', {id: reply.id}) }}"
+                                                          method="post" style="display:inline;">
+                                                        <input type="hidden" name="_token"
+                                                               value="{{ csrf_token('delete' ~ reply.id) }}">
+                                                        <button type="submit" class="ss-comment-action-btn ss-delete-btn"
+                                                                onclick="return confirm('Delete this reply?')">Delete</button>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+                                <div class="ss-comment-input-wrap" style="padding-left:0;margin-top:10px;">
+                                    <form action="{{ path('comment_new') }}" method="post"
+                                          style="display:flex;gap:8px;flex:1;">
+                                        <input type="hidden" name="comment[post]" value="{{ post.id }}">
+                                        <input type="hidden" name="comment[parentComment]" value="{{ comment.id }}">
+                                        <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
+                                        <input type="text" name="comment[content]" class="ss-comment-input"
+                                               placeholder="Write a reply…">
+                                        <button type="submit" class="ss-comment-submit-btn">Reply</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="ss-comment-input-wrap" id="reply-form-{{ comment.id }}"
+                             style="display:none;padding-left:42px;">
+                            <form action="{{ path('comment_new') }}" method="post"
+                                  style="display:flex;gap:8px;flex:1;">
+                                <input type="hidden" name="comment[post]" value="{{ post.id }}">
+                                <input type="hidden" name="comment[parentComment]" value="{{ comment.id }}">
+                                <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
+                                <input type="text" name="comment[content]" class="ss-comment-input"
+                                       placeholder="Write a reply…" id="reply-input-{{ comment.id }}">
+                                <button type="submit" class="ss-comment-submit-btn">Reply</button>
+                            </form>
+                        </div>
+
+                        <hr class="ss-comment-sep"
+                            style="border:none;border-top:1px solid var(--gray-100);margin:4px 0;opacity:.4;">
+                    {% endfor %}
+                {% endif %}
+
+                <div class="ss-comment-input-wrap mt-3">
+                    <form action="{{ path('comment_new') }}" method="post" style="display:flex;gap:8px;flex:1;">
+                        <input type="hidden" name="comment[post]" value="{{ post.id }}">
+                        <input type="hidden" name="comment[parentComment]" value="">
+                        <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
+                        <input type="text" name="comment[content]" class="ss-comment-input"
+                               placeholder="Write a comment…">
+                        <button type="submit" class="ss-comment-submit-btn">Post</button>
+                    </form>
+                </div>
+            </div>{# end comments-section #}
+
+        </div>{# end ss-post-card #}
+        {% endif %}
+    {% endfor %}
+{% endif %}

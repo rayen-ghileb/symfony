@@ -14,6 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Length;
 
 class PostType extends AbstractType
 {
@@ -22,8 +23,16 @@ class PostType extends AbstractType
         $builder
             ->add('content', TextareaType::class, [
                 'label'       => 'Content',
-                'constraints' => [new NotBlank()],
-                'attr'        => ['rows' => 5, 'placeholder' => 'What\'s on your mind?'],
+                'constraints' => [
+                    new NotBlank(['message' => 'Post content cannot be empty.']),
+                    new Length([
+                        'min'        => 3,
+                        'max'        => 5000,
+                        'minMessage' => 'Post must be at least {{ limit }} characters.',
+                        'maxMessage' => 'Post cannot exceed {{ limit }} characters.',
+                    ]),
+                ],
+                'attr' => ['rows' => 5, 'placeholder' => 'What\'s on your mind?'],
             ])
             ->add('visibility', ChoiceType::class, [
                 'label'   => 'Visibility',
@@ -33,11 +42,12 @@ class PostType extends AbstractType
                 'label'         => 'Media',
                 'entry_type'    => PostMediaType::class,
                 'allow_add'     => true,
-                'allow_delete'  => true,
+                'allow_delete'  => false,
                 'by_reference'  => false,
                 'required'      => false,
                 'prototype'     => true,
                 'entry_options' => ['label' => false],
+                'mapped'        => false,
             ])
             ->add('mediaFiles', FileType::class, [
                 'label'       => 'Upload Media',
@@ -53,6 +63,12 @@ class PostType extends AbstractType
                         ]),
                     ]),
                 ],
+            ])
+            ->add('keepMedia', \Symfony\Component\Form\Extension\Core\Type\TextType::class, [
+                'label'    => false,
+                'mapped'   => false,
+                'required' => false,
+                'attr'     => ['style' => 'display:none'],
             ]);
     }
 

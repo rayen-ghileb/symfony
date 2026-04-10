@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CommentType extends AbstractType
@@ -24,9 +25,17 @@ class CommentType extends AbstractType
                 'required' => false,
             ])
             ->add('content', TextareaType::class, [
-                'label'       => 'Content',
-                'constraints' => [new NotBlank()],
-                'attr'        => ['rows' => 4],
+                'label'       => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'Comment cannot be empty.']),
+                    new Length([
+                        'min'        => 1,
+                        'max'        => 2000,
+                        'minMessage' => 'Comment must be at least {{ limit }} character.',
+                        'maxMessage' => 'Comment cannot exceed {{ limit }} characters.',
+                    ]),
+                ],
+                'attr' => ['placeholder' => 'Write a comment…'],
             ]);
     }
 

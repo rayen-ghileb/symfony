@@ -9,6 +9,7 @@ use App\Form\ReactionType;
 use App\Repository\ReactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -66,6 +67,9 @@ class ReactionController extends AbstractController
                 $this->addFlash('danger', $error->getMessage());
             }
         }
+        if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+            return new JsonResponse(['success' => true]);
+        }
 
         return $this->redirectToRoute('app_feed');
     }
@@ -95,10 +99,13 @@ class ReactionController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        if ($this->isCsrfTokenValid('delete'.$postId.'_'.$userId, $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $postId . '_' . $userId, $request->request->get('_token'))) {
             $em->remove($reaction);
             $em->flush();
             $this->addFlash('success', 'Reaction removed.');
+        }
+        if ($request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+            return new JsonResponse(['success' => true]);
         }
 
         return $this->redirectToRoute('app_feed');

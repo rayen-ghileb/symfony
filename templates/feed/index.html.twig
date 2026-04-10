@@ -10,131 +10,6 @@
    Indigo/violet theme · Segoe UI · Bootstrap 5.3
 ══════════════════════════════════════════════ */
 
-:root {
-    --indigo:       #4f46e5;
-    --violet:       #7c3aed;
-    --indigo-light: #ede9fe;
-    --indigo-mid:   #c4b5fd;
-    --gray-50:  #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-400: #9ca3af;
-    --gray-500: #6b7280;
-    --gray-700: #374151;
-    --gray-800: #1f2937;
-    --gray-900: #111827;
-    --green:  #10b981;
-    --amber:  #f59e0b;
-    --red:    #ef4444;
-    --red-bg: #fee2e2;
-    --radius-card: 16px;
-    --radius-sm:   10px;
-    --radius-xs:   8px;
-    --shadow-card: 0 2px 8px rgba(0,0,0,.05);
-    --shadow-card-hover: 0 4px 14px rgba(79,70,229,.10);
-    --shadow-btn:  0 3px 12px rgba(79,70,229,.4);
-}
-
-/* ── Base ─────────────────────────────────── */
-body {
-    background: var(--gray-100);
-    font-family: 'Segoe UI', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    color: var(--gray-800);
-}
-
-/* ── Navbar ───────────────────────────────── */
-.ss-navbar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: #fff;
-    border-bottom: 1px solid var(--gray-200);
-    box-shadow: 0 2px 8px rgba(0,0,0,.04);
-    padding: 0 24px;
-    height: 62px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-.ss-logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    flex-shrink: 0;
-}
-.ss-logo-icon { color: var(--indigo); font-size: 20px; }
-.ss-logo-text {
-    font-size: 19px;
-    font-weight: 700;
-    color: var(--indigo);
-    letter-spacing: -.3px;
-}
-.ss-search-wrap {
-    flex: 1;
-    max-width: 380px;
-    position: relative;
-}
-.ss-search-wrap .bi-search {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--gray-400);
-    font-size: 13px;
-    pointer-events: none;
-}
-.ss-search {
-    width: 100%;
-    background: var(--gray-50);
-    border: 1.5px solid var(--gray-200);
-    border-radius: 12px;
-    padding: 9px 14px 9px 38px;
-    font-size: 13.5px;
-    color: var(--gray-900);
-    transition: border-color .2s;
-    outline: none;
-}
-.ss-search::placeholder { color: var(--gray-400); }
-.ss-search:focus { border-color: var(--indigo-mid); background: #fff; }
-
-.ss-nav-right {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-shrink: 0;
-}
-.ss-avatar {
-    width: 42px; height: 42px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 15px; color: #fff;
-    cursor: pointer; flex-shrink: 0;
-    text-decoration: none;
-}
-.ss-avatar-patient      { background: var(--indigo); }
-.ss-avatar-psychiatrist { background: var(--green); }
-.ss-avatar-admin        { background: var(--amber); }
-
-.ss-nav-info { line-height: 1.2; }
-.ss-nav-name { font-weight: 700; font-size: 13.5px; color: var(--gray-900); }
-.ss-nav-role { font-size: 11px; font-weight: 600; }
-.ss-nav-role-patient      { color: var(--indigo); }
-.ss-nav-role-psychiatrist { color: var(--green); }
-.ss-nav-role-admin        { color: var(--amber); }
-
-.ss-home-btn {
-    width: 38px; height: 38px;
-    background: var(--gray-100);
-    border: none; border-radius: var(--radius-xs);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--gray-500); cursor: pointer;
-    text-decoration: none;
-    transition: background .2s, color .2s;
-}
-.ss-home-btn:hover { background: var(--red-bg); color: var(--red); }
-
 /* ── Feed layout ──────────────────────────── */
 .ss-feed-wrap {
     display: flex;
@@ -252,10 +127,7 @@ body {
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
 }
-.ss-up-thumb img {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
-}
+.ss-up-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .ss-up-vid-icon { font-size: 22px; line-height: 1; }
 .ss-up-remove {
     position: absolute; top: 4px; right: 4px;
@@ -285,23 +157,6 @@ body {
 }
 .ss-up-add-btn span.ss-up-add-label { font-size: 11px; font-weight: 600; }
 .ss-up-add-btn:hover { border-color: var(--indigo); background: #ddd6fe; }
-
-.ss-attach-btn {
-    background: var(--gray-100);
-    border: 1.5px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    padding: 8px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--gray-700);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: all .2s;
-}
-.ss-attach-btn:hover { background: var(--indigo-light); border-color: var(--indigo-mid); color: var(--indigo); }
-.ss-attach-btn:hover .bi { color: var(--indigo); }
 
 .ss-post-btn {
     background: linear-gradient(to right, var(--indigo), var(--violet));
@@ -425,47 +280,18 @@ body {
     display: grid;
     gap: 2px;
 }
-.ss-media-grid.count-1 {
-    grid-template-columns: 1fr;
-}
-.ss-media-grid.count-1 .ss-media-cell {
-    height: 340px;
-}
-.ss-media-grid.count-2 {
-    grid-template-columns: 1fr 1fr;
-}
-.ss-media-grid.count-2 .ss-media-cell {
-    height: 250px;
-}
-.ss-media-grid.count-3 {
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: 130px 130px;
-}
-.ss-media-grid.count-3 .ss-media-cell:first-child {
-    grid-row: 1 / 3;
-    height: 262px;
-}
-.ss-media-grid.count-3 .ss-media-cell:not(:first-child) {
-    height: 130px;
-}
-.ss-media-grid.count-4 {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 175px 175px;
-}
-.ss-media-grid.count-4 .ss-media-cell {
-    height: 175px;
-}
-.ss-media-grid.count-5plus {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 180px 175px;
-}
-.ss-media-grid.count-5plus .ss-media-cell:first-child {
-    grid-column: 1 / 3;
-    height: 180px;
-}
-.ss-media-grid.count-5plus .ss-media-cell:not(:first-child) {
-    height: 175px;
-}
+.ss-media-grid.count-1 { grid-template-columns: 1fr; }
+.ss-media-grid.count-1 .ss-media-cell { height: 340px; }
+.ss-media-grid.count-2 { grid-template-columns: 1fr 1fr; }
+.ss-media-grid.count-2 .ss-media-cell { height: 250px; }
+.ss-media-grid.count-3 { grid-template-columns: 2fr 1fr; grid-template-rows: 130px 130px; }
+.ss-media-grid.count-3 .ss-media-cell:first-child { grid-row: 1 / 3; height: 262px; }
+.ss-media-grid.count-3 .ss-media-cell:not(:first-child) { height: 130px; }
+.ss-media-grid.count-4 { grid-template-columns: 1fr 1fr; grid-template-rows: 175px 175px; }
+.ss-media-grid.count-4 .ss-media-cell { height: 175px; }
+.ss-media-grid.count-5plus { grid-template-columns: 1fr 1fr; grid-template-rows: 180px 175px; }
+.ss-media-grid.count-5plus .ss-media-cell:first-child { grid-column: 1 / 3; height: 180px; }
+.ss-media-grid.count-5plus .ss-media-cell:not(:first-child) { height: 175px; }
 .ss-media-cell {
     position: relative;
     overflow: hidden;
@@ -475,8 +301,9 @@ body {
 .ss-media-cell img,
 .ss-media-cell video {
     width: 100%; height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
+    background: #ffffff;
 }
 .ss-media-more-overlay {
     position: absolute; inset: 0;
@@ -562,11 +389,7 @@ body {
     padding-top: 16px;
     border-top: 1px solid var(--gray-100);
 }
-.ss-comments-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-}
+.ss-comments-header { display: flex; align-items: center; margin-bottom: 12px; }
 .ss-comments-title { font-weight: 700; font-size: 14px; color: var(--gray-800); }
 .ss-hide-btn {
     margin-left: auto;
@@ -687,11 +510,6 @@ body {
 }
 .ss-replies-toggle:hover { color: var(--violet); text-decoration: underline; }
 
-/* Post inline edit */
-.ss-post-edit-form { display: none; }
-.ss-post-edit-form.show { display: block; }
-.ss-post-view.hidden { display: none; }
-
 /* ── No Posts Empty State ─────────────────── */
 .ss-empty-state {
     background: #fff;
@@ -759,6 +577,34 @@ body {
     box-shadow: 0 4px 16px rgba(220,38,38,.15);
 }
 
+/* ── AJAX toast notification ──────────────── */
+#ajax-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    min-width: 260px;
+    max-width: 400px;
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.15);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity .25s, transform .25s;
+    pointer-events: none;
+}
+#ajax-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+#ajax-toast.toast-success { background: #f0fdf4; border: 1.5px solid #bbf7d0; color: #166534; }
+#ajax-toast.toast-danger  { background: #fef2f2; border: 1.5px solid #fecaca; color: #991b1b; }
+
 /* ── Delete confirm modal ─────────────────── */
 .ss-confirm-overlay {
     display: none;
@@ -793,16 +639,155 @@ body {
 /* ── Responsive ───────────────────────────── */
 @media (max-width: 768px) {
     .ss-feed-wrap { padding: 16px 12px; }
-    .ss-navbar { padding: 0 12px; gap: 10px; }
-    .ss-search-wrap { max-width: 180px; }
-    .ss-nav-info { display: none; }
 }
 
 /* hide separator after last comment */
-.ss-comments-section > .ss-comment-sep:last-of-type,
-.ss-comments-section > div:last-child > .ss-comment-sep { display: none; }
-/* simpler: hide last hr inside the comments loop */
 .ss-comment-sep:last-of-type { display: none; }
+
+/* ── Edit Post Modal ──────────────────────── */
+.ss-modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 600;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.ss-modal-overlay.show { display: flex; }
+.ss-modal {
+    background: #fff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    overflow: hidden;
+}
+.ss-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 24px 24px 0;
+    flex-shrink: 0;
+}
+.ss-modal-icon-wrap {
+    width: 42px; height: 42px;
+    background: var(--indigo-light);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--indigo);
+    font-size: 16px;
+    flex-shrink: 0;
+}
+.ss-modal-title    { font-size: 17px; font-weight: 700; color: var(--gray-900); }
+.ss-modal-subtitle { font-size: 12.5px; color: var(--gray-400); margin-top: 1px; }
+.ss-modal-close {
+    margin-left: auto;
+    width: 32px; height: 32px;
+    background: var(--gray-100);
+    border: none; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--gray-500);
+    cursor: pointer; flex-shrink: 0;
+    transition: background .15s, color .15s;
+}
+.ss-modal-close:hover { background: var(--red-bg); color: var(--red); }
+.ss-modal-divider {
+    height: 1px;
+    background: var(--gray-100);
+    margin: 20px 0 0;
+    flex-shrink: 0;
+}
+.ss-modal-body {
+    overflow-y: auto;
+    padding: 20px 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.ss-modal-section-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 8px;
+    display: block;
+}
+.ss-modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.ss-modal-cancel {
+    background: var(--gray-100);
+    border: none; border-radius: 10px;
+    padding: 9px 22px;
+    font-size: 13.5px; color: var(--gray-700);
+    cursor: pointer; font-family: inherit;
+    transition: background .15s;
+}
+.ss-modal-cancel:hover { background: var(--gray-200); }
+.ss-modal-save {
+    background: linear-gradient(to right, var(--indigo), var(--violet));
+    border: none; border-radius: 10px;
+    padding: 9px 22px;
+    font-size: 13.5px; font-weight: 700; color: #fff;
+    cursor: pointer; font-family: inherit;
+    box-shadow: var(--shadow-btn);
+    transition: transform .15s, box-shadow .15s;
+}
+.ss-modal-save:hover  { transform: scale(1.02); box-shadow: 0 5px 16px rgba(79,70,229,.5); }
+.ss-modal-save:active { transform: scale(0.98); }
+
+/* Current media thumbs inside modal */
+.ss-modal-media-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.ss-modal-media-item {
+    position: relative;
+    width: 80px; height: 80px;
+    border-radius: var(--radius-xs);
+    overflow: hidden;
+    border: 1.5px solid var(--gray-200);
+    background: var(--gray-100);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.ss-modal-media-item img,
+.ss-modal-media-item video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ss-modal-media-del {
+    position: absolute; top: 4px; right: 4px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.55);
+    border: none; cursor: pointer;
+    color: #fff; font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0; transition: background .15s;
+}
+.ss-modal-media-del:hover { background: rgba(220,38,38,.85); }
+.ss-modal-no-media { font-size: 13px; color: var(--gray-400); font-style: italic; padding: 4px 0; }
+.ss-modal-add-media-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--gray-100);
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    padding: 8px 16px;
+    font-size: 13px; font-weight: 600; color: var(--gray-700);
+    cursor: pointer; font-family: inherit;
+    transition: all .2s;
+    margin-top: 4px;
+}
+.ss-modal-add-media-btn:hover {
+    background: var(--indigo-light);
+    border-color: var(--indigo-mid);
+    color: var(--indigo);
+}
 </style>
 {% endblock %}
 
@@ -824,43 +809,14 @@ body {
     {% endif %}
 {% endmacro %}
 
-{# ═══════════════════════════════════ NAVBAR ═══════════════════════════════════ #}
-<nav class="ss-navbar">
-    <a href="{{ path('app_feed') }}" class="ss-logo">
-        <i class="bi bi-shield-fill-check ss-logo-icon"></i>
-        <span class="ss-logo-text">SafeSpace</span>
-    </a>
-
-    <div class="ss-search-wrap">
-        <i class="bi bi-search"></i>
-        <input type="text" class="ss-search" id="searchInput" placeholder="Search posts…">
-    </div>
-
-    <div class="ss-nav-right">
-        {% if currentUser %}
-            <a href="#" class="ss-avatar {{ _self.avatarClass(currentUser.role) }}" title="{{ currentUser.fullName }}">
-                {% if currentUser.profilePicture %}
-                    <img src="{{ currentUser.profilePicture }}" alt="{{ currentUser.fullName }}" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
-                {% else %}
-                    {{ _self.initials(currentUser.fullName) }}
-                {% endif %}
-            </a>
-            <div class="ss-nav-info">
-                <div class="ss-nav-name">{{ currentUser.fullName }}</div>
-                <div class="ss-nav-role ss-nav-role-{{ currentUser.role|lower }}">{{ currentUser.role }}</div>
-            </div>
-        {% endif %}
-        <a href="{{ path('app_home') }}" class="ss-home-btn" title="Home">
-            <i class="bi bi-house-fill"></i>
-        </a>
-    </div>
-</nav>
+{# ── AJAX toast element ── #}
+<div id="ajax-toast"></div>
 
 {# ═══════════════════════════════════ FEED ═══════════════════════════════════ #}
 <div class="ss-feed-wrap">
 <div class="ss-feed-inner">
 
-    {# Flash messages #}
+    {# Flash messages (server-side) #}
     {% for label, messages in app.flashes %}
         {% for message in messages %}
             <div class="ss-toast-{{ label == 'success' ? 'success' : 'error' }}">
@@ -882,7 +838,6 @@ body {
     {# ──── Create Post Card ──── #}
     <div class="ss-card" id="createPostCard">
         <form action="{{ path('post_new') }}" method="post" enctype="multipart/form-data" id="createPostForm">
-            {# CSRF token — PostType uses token id "post" #}
             <input type="hidden" name="post[_token]" value="{{ csrf_token('post') }}">
 
             <div class="d-flex gap-3 align-items-start mb-3">
@@ -892,7 +847,6 @@ body {
                           placeholder="What's on your mind?"></textarea>
             </div>
 
-            {# Visibility selector #}
             <div class="d-flex align-items-center gap-2 mb-3">
                 <span class="ss-vis-label">Who can see this?</span>
                 <button type="button" class="ss-vis-btn {{ currentUser.role != 'PATIENT' ? 'active' : '' }}"
@@ -909,45 +863,44 @@ body {
                        value="{{ currentUser.role == 'PATIENT' ? 'PATIENTS_ONLY' : 'PUBLIC' }}">
             </div>
 
-            {# Media preview #}
-            <div class="ss-media-preview mb-3" id="mediaPreview">
-                <div class="d-flex flex-wrap gap-2" id="mediaThumbs"></div>
-            </div>
-
-{# Media upload grid #}
             <div class="mb-3">
                 <div class="ss-up-grid" id="ss-up-grid"></div>
             </div>
-            {# Hidden file picker — triggered by the + button #}
-            <input type="file" id="ss-up-input" style="display:none;"
-                   accept="image/*,video/*" multiple>
+            <input type="file" id="ss-up-input" style="display:none;" accept="image/*,video/*" multiple>
 
-            {# Actions #}
             <div class="d-flex justify-content-end align-items-center">
                 <button type="submit" class="ss-post-btn">Post</button>
             </div>
         </form>
     </div>
 
-
     {# ──── Filter Bar ──── #}
     <div class="ss-filters">
         <span class="ss-filter-label">Filter</span>
-        <a href="{{ path('app_feed') }}" class="ss-filter-btn {{ app.request.query.get('filter') is null ? 'active' : '' }}">All Posts</a>
-        <a href="{{ path('app_feed', {'filter': 'PUBLIC'}) }}" class="ss-filter-btn {{ app.request.query.get('filter') == 'PUBLIC' ? 'active' : '' }}">
+        <a href="#" class="ss-filter-btn {{ filter is not defined or filter == '' ? 'active' : '' }}"
+           data-filter="">All Posts</a>
+        <a href="#" class="ss-filter-btn {{ filter is defined and filter == 'PUBLIC' ? 'active' : '' }}"
+           data-filter="PUBLIC">
             <i class="bi bi-globe2"></i> Public
         </a>
         {% if currentUser.role == 'PATIENT' %}
-        <a href="{{ path('app_feed', {'filter': 'PATIENTS_ONLY'}) }}" class="ss-filter-btn {{ app.request.query.get('filter') == 'PATIENTS_ONLY' ? 'active' : '' }}">
+        <a href="#" class="ss-filter-btn {{ filter is defined and filter == 'PATIENTS_ONLY' ? 'active' : '' }}"
+           data-filter="PATIENTS_ONLY">
             <i class="bi bi-people-fill"></i> Patients Only
         </a>
         {% endif %}
-        <div class="ss-latest-tag ms-auto">
-            <i class="bi bi-clock"></i> Latest
+        <div class="ss-latest-tag ms-auto" style="gap:10px;">
+            <i class="bi bi-clock"></i>
+            <select id="sortSelect"
+                    style="background:none;border:none;font-size:12px;color:var(--gray-400);cursor:pointer;outline:none;font-family:inherit;">
+                <option value="newest" {{ sort is defined and sort == 'newest' ? 'selected' : '' }}>⬇ Newest</option>
+                <option value="oldest" {{ sort is defined and sort == 'oldest' ? 'selected' : '' }}>⬆ Oldest</option>
+            </select>
         </div>
     </div>
 
     {# ──── Posts ──── #}
+    <div id="posts-container">
     {% if posts is empty %}
         <div class="ss-empty-state">
             <div class="ss-empty-icon-wrap"><i class="bi bi-chat-slash-fill"></i></div>
@@ -995,7 +948,7 @@ body {
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="border-radius:12px;border:1px solid #e5e7eb;padding:6px 0;">
                             <li>
                                 <button class="dropdown-item d-flex align-items-center gap-2"
-                                        onclick="toggleEditPost({{ post.id }})"
+                                        onclick="openEditModal({{ post.id }})"
                                         style="font-size:13px;padding:10px 16px;">
                                     <i class="bi bi-pencil-fill text-secondary"></i> Edit post
                                 </button>
@@ -1013,11 +966,10 @@ body {
                     {% endif %}
                 </div>
 
-                {# ── Post read view ── #}
+                {# ── Post content ── #}
                 <div class="ss-post-view" id="post-view-{{ post.id }}">
                     <div class="ss-post-content">{{ post.content }}</div>
 
-{# Media Gallery — Facebook-style layout #}
                     {% if post.mediaList is not empty %}
                         {% set mediaCount = post.mediaList|length %}
                         {% if mediaCount == 1 %}{% set gridClass = 'count-1' %}
@@ -1026,11 +978,8 @@ body {
                         {% elseif mediaCount == 4 %}{% set gridClass = 'count-4' %}
                         {% else %}{% set gridClass = 'count-5plus' %}
                         {% endif %}
-
-                        {# For 5+: show first item full-width, then items 2–4, last cell gets +N overlay #}
                         {% set displayList = mediaCount <= 4 ? post.mediaList : post.mediaList|slice(0, 4) %}
                         {% set hiddenCount = mediaCount > 4 ? mediaCount - 4 : 0 %}
-
                         <div class="ss-media-grid {{ gridClass }} mb-3">
                             {% for media in displayList %}
                                 {% set isLast = loop.last and hiddenCount > 0 %}
@@ -1103,36 +1052,8 @@ body {
                     </div>
                 </div>{# end ss-post-view #}
 
-                {# ── Inline Edit Form ── #}
-                <div class="ss-post-edit-form" id="post-edit-{{ post.id }}">
-                    <form action="{{ path('post_edit', {id: post.id}) }}" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="_method" value="POST">
-                        <input type="hidden" name="post[_token]" value="{{ csrf_token('post') }}">
-                        <textarea name="post[content]" class="ss-textarea mb-3" rows="4">{{ post.content }}</textarea>
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <span class="ss-vis-label">Visibility</span>
-                            <button type="button" class="ss-vis-btn {{ post.visibility == 'PUBLIC' ? 'active' : '' }}"
-                                    onclick="setVisibilityEdit(this,'PUBLIC',{{ post.id }})">
-                                <i class="bi bi-globe2"></i> Public
-                            </button>
-                            {% if currentUser.role == 'PATIENT' %}
-                            <button type="button" class="ss-vis-btn {{ post.visibility == 'PATIENTS_ONLY' ? 'active' : '' }}"
-                                    onclick="setVisibilityEdit(this,'PATIENTS_ONLY',{{ post.id }})">
-                                <i class="bi bi-people-fill"></i> Patients Only
-                            </button>
-                            {% endif %}
-                            <input type="hidden" name="post[visibility]" id="editVis-{{ post.id }}" value="{{ post.visibility }}">
-                        </div>
-                        <div class="d-flex gap-2 justify-content-end">
-                            <button type="button" class="ss-inline-edit-cancel" onclick="toggleEditPost({{ post.id }})">Cancel</button>
-                            <button type="submit" class="ss-post-btn" style="padding:9px 18px;font-size:13px;">Save changes</button>
-                        </div>
-                    </form>
-                </div>
-
                 {# ── Comments Section ── #}
                 <div class="ss-comments-section" id="comments-section-{{ post.id }}" style="display:none;">
-                    
                     <div class="ss-comments-header">
                         <span class="ss-comments-title">💬 {{ topLevelComments|length }} Comment{% if topLevelComments|length != 1 %}s{% endif %}</span>
                         <button class="ss-hide-btn" onclick="toggleComments({{ post.id }})">Hide</button>
@@ -1145,7 +1066,6 @@ body {
                         </div>
                     {% else %}
                         {% for comment in topLevelComments %}
-                            {# ── Comment row ── #}
                             <div class="ss-comment" id="comment-{{ comment.id }}">
                                 <div class="ss-comment-avatar" style="{{ _self.avatarBg(comment.author.role) }}">
                                     {{ _self.initials(comment.author.fullName) }}
@@ -1158,10 +1078,8 @@ body {
                                     </div>
                                     <div class="ss-comment-text" id="comment-text-{{ comment.id }}">{{ comment.content }}</div>
 
-                                    {# Inline edit #}
                                     <div class="ss-inline-edit" id="comment-edit-{{ comment.id }}">
                                         <form action="{{ path('comment_edit', {id: comment.id}) }}" method="post" style="flex:1;display:flex;gap:8px;">
-                                            <input type="hidden" name="_method" value="POST">
                                             <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
                                             <textarea name="comment[content]" rows="2" style="flex:1;border:1.5px solid #4f46e5;border-radius:10px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none;resize:none;background:#ede9fe;">{{ comment.content }}</textarea>
                                             <div style="display:flex;flex-direction:column;gap:4px;">
@@ -1178,7 +1096,6 @@ body {
                                             <button class="ss-comment-action-btn ss-edit-btn"
                                                     onclick="toggleEditComment({{ comment.id }})">Edit</button>
                                             <form action="{{ path('comment_delete', {id: comment.id}) }}" method="post" style="display:inline;">
-                                                <input type="hidden" name="_method" value="POST">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
                                                 <button type="submit" class="ss-comment-action-btn ss-delete-btn"
                                                         onclick="return confirm('Delete this comment?')">Delete</button>
@@ -1188,7 +1105,6 @@ body {
                                 </div>
                             </div>
 
-                            {# ── Replies toggle ── #}
                             {% set replies = comment.replies|filter(r => not r.isDeleted) %}
                             {% if replies is not empty %}
                                 <button class="ss-replies-toggle" id="replies-toggle-{{ comment.id }}"
@@ -1212,7 +1128,6 @@ body {
 
                                                 <div class="ss-inline-edit" id="comment-edit-{{ reply.id }}">
                                                     <form action="{{ path('comment_edit', {id: reply.id}) }}" method="post" style="flex:1;display:flex;gap:8px;">
-                                                        <input type="hidden" name="_method" value="POST">
                                                         <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
                                                         <textarea name="comment[content]" rows="2" style="flex:1;border:1.5px solid #4f46e5;border-radius:10px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none;resize:none;background:#ede9fe;">{{ reply.content }}</textarea>
                                                         <div style="display:flex;flex-direction:column;gap:4px;">
@@ -1227,7 +1142,6 @@ body {
                                                         <button class="ss-comment-action-btn ss-edit-btn"
                                                                 onclick="toggleEditComment({{ reply.id }})">Edit</button>
                                                         <form action="{{ path('comment_delete', {id: reply.id}) }}" method="post" style="display:inline;">
-                                                            <input type="hidden" name="_method" value="POST">
                                                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reply.id) }}">
                                                             <button type="submit" class="ss-comment-action-btn ss-delete-btn"
                                                                     onclick="return confirm('Delete this reply?')">Delete</button>
@@ -1238,21 +1152,18 @@ body {
                                         </div>
                                     {% endfor %}
 
-                                    {# Reply input inside expanded replies #}
                                     <div class="ss-comment-input-wrap" style="padding-left:0;margin-top:10px;">
                                         <form action="{{ path('comment_new') }}" method="post" style="display:flex;gap:8px;flex:1;">
                                             <input type="hidden" name="comment[post]" value="{{ post.id }}">
                                             <input type="hidden" name="comment[parentComment]" value="{{ comment.id }}">
                                             <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
-                                            <input type="text" name="comment[content]" class="ss-comment-input"
-                                                   placeholder="Write a reply…">
+                                            <input type="text" name="comment[content]" class="ss-comment-input" placeholder="Write a reply…">
                                             <button type="submit" class="ss-comment-submit-btn">Reply</button>
                                         </form>
                                     </div>
                                 </div>
                             {% endif %}
 
-                            {# Inline reply form (collapsed by default) #}
                             <div class="ss-comment-input-wrap" id="reply-form-{{ comment.id }}" style="display:none;padding-left:42px;">
                                 <form action="{{ path('comment_new') }}" method="post" style="display:flex;gap:8px;flex:1;">
                                     <input type="hidden" name="comment[post]" value="{{ post.id }}">
@@ -1268,14 +1179,12 @@ body {
                         {% endfor %}
                     {% endif %}
 
-                    {# ── New top-level comment ── #}
                     <div class="ss-comment-input-wrap mt-3">
                         <form action="{{ path('comment_new') }}" method="post" style="display:flex;gap:8px;flex:1;">
                             <input type="hidden" name="comment[post]" value="{{ post.id }}">
                             <input type="hidden" name="comment[parentComment]" value="">
                             <input type="hidden" name="comment[_token]" value="{{ csrf_token('comment') }}">
-                            <input type="text" name="comment[content]" class="ss-comment-input"
-                                   placeholder="Write a comment…">
+                            <input type="text" name="comment[content]" class="ss-comment-input" placeholder="Write a comment…">
                             <button type="submit" class="ss-comment-submit-btn">Post</button>
                         </form>
                     </div>
@@ -1285,6 +1194,7 @@ body {
             {% endif %}
         {% endfor %}
     {% endif %}
+    </div>{# end posts-container #}
 
 </div>{# end ss-feed-inner #}
 </div>{# end ss-feed-wrap #}
@@ -1299,10 +1209,108 @@ body {
             <div class="ss-confirm-btns">
                 <button class="ss-confirm-cancel" onclick="hideConfirm({{ post.id }})">Cancel</button>
                 <form action="{{ path('post_delete', {id: post.id}) }}" method="post" style="display:inline;">
-                    <input type="hidden" name="_method" value="POST">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
                     <button type="submit" class="ss-confirm-delete">Delete</button>
                 </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}
+
+{# ── Edit Post Modals ── #}
+{% for post in posts %}
+    {% if not post.isDeleted and currentUser.id == post.author.id %}
+    <div class="ss-modal-overlay" id="edit-modal-{{ post.id }}">
+        <div class="ss-modal">
+            <div class="ss-modal-header">
+                <div class="ss-modal-icon-wrap"><i class="bi bi-pencil-fill"></i></div>
+                <div>
+                    <div class="ss-modal-title">Edit Post</div>
+                    <div class="ss-modal-subtitle">Make changes to your post below</div>
+                </div>
+                <button class="ss-modal-close" onclick="closeEditModal({{ post.id }})">&#x2715;</button>
+            </div>
+            <div class="ss-modal-divider"></div>
+
+            <div class="ss-modal-body">
+                <form action="{{ path('post_edit', {id: post.id}) }}"
+                      method="post" enctype="multipart/form-data"
+                      id="edit-form-{{ post.id }}">
+                    <input type="hidden" name="post[_token]" value="{{ csrf_token('post') }}">
+
+                    <div>
+                        <span class="ss-modal-section-label">Caption</span>
+                        <textarea name="post[content]" class="ss-textarea" rows="4"
+                                  placeholder="What's on your mind?">{{ post.content }}</textarea>
+                    </div>
+
+                    <div>
+                        <span class="ss-modal-section-label">Visibility</span>
+                        <div class="d-flex gap-2">
+                            <button type="button"
+                                    class="ss-vis-btn {{ post.visibility == 'PUBLIC' ? 'active' : '' }}"
+                                    onclick="setEditModalVisibility(this, 'PUBLIC', {{ post.id }})">
+                                <i class="bi bi-globe2"></i> Public
+                            </button>
+                            {% if currentUser.role == 'PATIENT' %}
+                            <button type="button"
+                                    class="ss-vis-btn {{ post.visibility == 'PATIENTS_ONLY' ? 'active' : '' }}"
+                                    onclick="setEditModalVisibility(this, 'PATIENTS_ONLY', {{ post.id }})">
+                                <i class="bi bi-people-fill"></i> Patients Only
+                            </button>
+                            {% endif %}
+                            <input type="hidden" name="post[visibility]"
+                                   id="modal-vis-{{ post.id }}" value="{{ post.visibility }}">
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="ss-modal-section-label">Current media</span>
+                        <input type="hidden" name="post[keepMedia]"
+                               id="keep-media-input-{{ post.id }}"
+                               value="{{ post.mediaList|map(m => m.id)|join(',') }}">
+                        <div class="ss-modal-media-grid" id="modal-media-{{ post.id }}">
+                            {% if post.mediaList is empty %}
+                                <span class="ss-modal-no-media">No media attached to this post.</span>
+                            {% else %}
+                                {% for media in post.mediaList %}
+                                    <div class="ss-modal-media-item"
+                                         id="modal-media-item-{{ media.id }}"
+                                         data-media-id="{{ media.id }}">
+                                        {% if media.mediaType == 'VIDEO' %}
+                                            <video><source src="{{ media.mediaUrl }}"></video>
+                                        {% else %}
+                                            <img src="{{ media.mediaUrl }}" alt="media">
+                                        {% endif %}
+                                        <button type="button" class="ss-modal-media-del" title="Remove"
+                                                onclick="removeExistingMedia(this, {{ media.id }}, {{ post.id }})">
+                                            &#x2715;
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="ss-modal-section-label">Add new media</span>
+                        <div class="ss-up-grid" id="modal-new-media-{{ post.id }}"></div>
+                        <input type="file" id="modal-file-{{ post.id }}" style="display:none"
+                               accept="image/*,video/*" multiple>
+                        <button type="button" class="ss-modal-add-media-btn"
+                                onclick="document.getElementById('modal-file-{{ post.id }}').click()">
+                            <i class="bi bi-camera-fill"></i> Add more media
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="ss-modal-footer">
+                <button class="ss-modal-cancel" onclick="closeEditModal({{ post.id }})">Cancel</button>
+                <button class="ss-modal-save" onclick="submitEditModal({{ post.id }})">
+                    <i class="bi bi-check-lg me-1"></i> Save changes
+                </button>
             </div>
         </div>
     </div>
@@ -1313,189 +1321,320 @@ body {
 
 {% block javascripts %}
 <script>
-/* ── Visibility selector (create post) ── */
+/* ══════════════════════════════════════════════════════════
+   AJAX TOAST
+══════════════════════════════════════════════════════════ */
+let toastTimer;
+function showToast(message, type = 'success') {
+    const el = document.getElementById('ajax-toast');
+    el.className = 'toast-' + (type === 'success' ? 'success' : 'danger');
+    el.innerHTML = `<i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-circle-fill'}" style="font-size:18px;flex-shrink:0;"></i><span>${message}</span>`;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+/* ══════════════════════════════════════════════════════════
+   AJAX — FETCH POSTS (search / filter / sort)
+══════════════════════════════════════════════════════════ */
+const postsContainer = document.getElementById('posts-container');
+
+function fetchPosts(params = {}) {
+    const url = new URL('/feed', window.location.origin);
+    Object.entries(params).forEach(([k, v]) => { if (v !== '' && v !== null && v !== undefined) url.searchParams.set(k, v); });
+    window.history.pushState({}, '', url.toString());
+    postsContainer.style.opacity = '0.5';
+    fetch(url.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(r => r.json())
+        .then(data => { postsContainer.innerHTML = data.html; postsContainer.style.opacity = '1'; })
+        .catch(() => { postsContainer.style.opacity = '1'; showToast('Failed to load posts.', 'danger'); });
+}
+
+function getCurrentParams() {
+    const p = new URLSearchParams(window.location.search);
+    return { filter: p.get('filter') || '', search: p.get('search') || '', sort: p.get('sort') || 'newest' };
+}
+
+/* Filter buttons */
+document.querySelectorAll('.ss-filter-btn[data-filter]').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelectorAll('.ss-filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        fetchPosts({ ...getCurrentParams(), filter: this.dataset.filter });
+    });
+});
+
+/* Sort select */
+document.getElementById('sortSelect').addEventListener('change', function () {
+    fetchPosts({ ...getCurrentParams(), sort: this.value });
+});
+
+/* ══════════════════════════════════════════════════════════
+   AJAX — CREATE POST
+══════════════════════════════════════════════════════════ */
+document.getElementById('createPostForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const form = this;
+    const submitBtn = form.querySelector('.ss-post-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Posting…';
+    fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(r => r.json())
+        .then(data => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Post';
+            if (data.success) {
+                form.querySelector('textarea').value = '';
+                form.querySelectorAll('.ss-vis-btn').forEach(b => b.classList.remove('active'));
+                form.querySelector('.ss-vis-btn').classList.add('active');
+                document.getElementById('ss-up-grid').innerHTML = '';
+                const oldReal = form.querySelector('input.ss-real-files');
+                if (oldReal) oldReal.remove();
+                fetchPosts(getCurrentParams());
+                showToast('Post created!', 'success');
+            } else {
+                showToast(data.errors ? data.errors.join(' ') : (data.error || 'Could not create post.'), 'danger');
+            }
+        })
+        .catch(() => { submitBtn.disabled = false; submitBtn.textContent = 'Post'; showToast('Network error.', 'danger'); });
+});
+
+/* ══════════════════════════════════════════════════════════
+   AJAX — EDIT POST
+══════════════════════════════════════════════════════════ */
+function submitEditModal(postId) {
+    const form = document.getElementById('edit-form-' + postId);
+    const saveBtn = document.querySelector('#edit-modal-' + postId + ' .ss-modal-save');
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Saving…';
+    fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(r => r.json())
+        .then(data => {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Save changes';
+            if (data.success) { closeEditModal(postId); fetchPosts(getCurrentParams()); showToast('Post updated!', 'success'); }
+            else showToast(data.errors ? data.errors.join(' ') : (data.error || 'Could not update post.'), 'danger');
+        })
+        .catch(() => { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Save changes'; showToast('Network error.', 'danger'); });
+}
+
+/* ══════════════════════════════════════════════════════════
+   AJAX — COMMENTS + REACTIONS (event delegation)
+══════════════════════════════════════════════════════════ */
+document.addEventListener('submit', function (e) {
+    const form = e.target;
+
+    if (form.action && form.action.includes('/comments/new')) {
+        e.preventDefault();
+        const input = form.querySelector('input[name="comment[content]"], textarea[name="comment[content]"]');
+        fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) { if (input) input.value = ''; fetchPosts(getCurrentParams()); }
+                else showToast(data.errors ? data.errors.join(' ') : (data.error || 'Could not post comment.'), 'danger');
+            })
+            .catch(() => showToast('Network error.', 'danger'));
+        return;
+    }
+
+    const editMatch = form.action && form.action.match(/\/comments\/(\d+)\/edit/);
+    if (editMatch) {
+        e.preventDefault();
+        const commentId = editMatch[1];
+        fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) { const textEl = document.getElementById('comment-text-' + commentId); if (textEl) textEl.textContent = data.content; toggleEditComment(commentId); }
+                else showToast(data.errors ? data.errors.join(' ') : 'Could not update comment.', 'danger');
+            })
+            .catch(() => showToast('Network error.', 'danger'));
+        return;
+    }
+
+    if (form.action && form.action.includes('/reactions')) {
+        e.preventDefault();
+        fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(r => r.json())
+            .then(data => { if (data.success) fetchPosts(getCurrentParams()); })
+            .catch(() => showToast('Network error.', 'danger'));
+    }
+});
+
+/* ══════════════════════════════════════════════════════════
+   VISIBILITY SELECTORS
+══════════════════════════════════════════════════════════ */
 function setVisibility(btn, value) {
     document.querySelectorAll('#createPostCard .ss-vis-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('visibilityInput').value = value;
 }
-
-/* ── Visibility selector (edit post) ── */
-function setVisibilityEdit(btn, value, postId) {
-    const form = document.getElementById('post-edit-' + postId);
-    form.querySelectorAll('.ss-vis-btn').forEach(b => b.classList.remove('active'));
+function setEditModalVisibility(btn, value, postId) {
+    const modal = document.getElementById('edit-modal-' + postId);
+    modal.querySelectorAll('.ss-vis-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('editVis-' + postId).value = value;
+    document.getElementById('modal-vis-' + postId).value = value;
 }
 
-/* ── Toggle post inline edit ── */
-function toggleEditPost(postId) {
-    const view = document.getElementById('post-view-' + postId);
-    const editForm = document.getElementById('post-edit-' + postId);
-    view.classList.toggle('hidden');
-    editForm.classList.toggle('show');
+/* ══════════════════════════════════════════════════════════
+   EDIT POST MODAL
+══════════════════════════════════════════════════════════ */
+function openEditModal(postId) {
+    document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
+    document.getElementById('edit-modal-' + postId).classList.add('show');
+    document.body.style.overflow = 'hidden';
+    initModalUploader(postId);
+}
+function closeEditModal(postId) {
+    document.getElementById('edit-modal-' + postId).classList.remove('show');
+    document.body.style.overflow = '';
+}
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('ss-modal-overlay')) {
+        e.target.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+});
+function updateKeepMediaInput(postId) {
+    const grid  = document.getElementById('modal-media-' + postId);
+    const input = document.getElementById('keep-media-input-' + postId);
+    if (!grid || !input) return;
+    const ids = [];
+    grid.querySelectorAll('.ss-modal-media-item:not(.ss-media-removed)').forEach(item => ids.push(item.dataset.mediaId));
+    input.value = ids.join(',');
+}
+function removeExistingMedia(btn, mediaId, postId) {
+    const item = document.getElementById('modal-media-item-' + mediaId);
+    if (item) { item.style.opacity = '0.35'; item.classList.add('ss-media-removed'); }
+    btn.innerHTML = '↩'; btn.title = 'Undo remove';
+    btn.onclick = function () { restoreExistingMedia(btn, mediaId, postId); };
+    updateKeepMediaInput(postId);
+}
+function restoreExistingMedia(btn, mediaId, postId) {
+    const item = document.getElementById('modal-media-item-' + mediaId);
+    if (item) { item.style.opacity = '1'; item.classList.remove('ss-media-removed'); }
+    btn.innerHTML = '&#x2715;'; btn.title = 'Remove';
+    btn.onclick = function () { removeExistingMedia(btn, mediaId, postId); };
+    updateKeepMediaInput(postId);
+}
+const modalUploaders = {};
+function initModalUploader(postId) {
+    if (modalUploaders[postId]) return;
+    const grid    = document.getElementById('modal-new-media-' + postId);
+    const trigger = document.getElementById('modal-file-' + postId);
+    const form    = document.getElementById('edit-form-' + postId);
+    if (!grid || !trigger || !form) return;
+    let files = [];
+    function syncInput() {
+        const old = form.querySelector('input.ss-modal-real-files');
+        if (old) old.remove();
+        if (files.length === 0) return;
+        const dt = new DataTransfer();
+        files.forEach(f => dt.items.add(f));
+        const real = document.createElement('input');
+        real.type = 'file'; real.name = 'post[mediaFiles][]';
+        real.multiple = true; real.className = 'ss-modal-real-files';
+        real.style.display = 'none';
+        form.appendChild(real);
+        real.files = dt.files;
+    }
+    function render() {
+        grid.innerHTML = '';
+        if (files.length === 0) { const e = document.createElement('span'); e.className = 'ss-up-empty'; e.textContent = 'No new files selected.'; grid.appendChild(e); }
+        files.forEach((file, i) => {
+            const thumb = document.createElement('div'); thumb.className = 'ss-up-thumb';
+            if (file.type.startsWith('image/')) { const img = document.createElement('img'); const url = URL.createObjectURL(file); img.src = url; img.onload = () => URL.revokeObjectURL(url); thumb.appendChild(img); }
+            else { const icon = document.createElement('span'); icon.className = 'ss-up-vid-icon'; icon.textContent = '🎬'; thumb.appendChild(icon); }
+            const rmBtn = document.createElement('button'); rmBtn.type = 'button'; rmBtn.className = 'ss-up-remove'; rmBtn.innerHTML = '&#x2715;';
+            rmBtn.addEventListener('click', () => { files.splice(i, 1); render(); syncInput(); });
+            thumb.appendChild(rmBtn); grid.appendChild(thumb);
+        });
+        const addBtn = document.createElement('div'); addBtn.className = 'ss-up-add-btn';
+        addBtn.innerHTML = '<span>+</span><span class="ss-up-add-label">Add</span>';
+        addBtn.addEventListener('click', () => { trigger.value = ''; trigger.click(); });
+        grid.appendChild(addBtn);
+    }
+    trigger.addEventListener('change', () => { Array.from(trigger.files).forEach(f => files.push(f)); render(); syncInput(); });
+    modalUploaders[postId] = true;
+    render();
 }
 
-/* ── Toggle comment inline edit ── */
+/* ══════════════════════════════════════════════════════════
+   COMMENTS UI HELPERS
+══════════════════════════════════════════════════════════ */
 function toggleEditComment(commentId) {
     const textEl = document.getElementById('comment-text-' + commentId);
     const editEl = document.getElementById('comment-edit-' + commentId);
     if (textEl) textEl.style.display = textEl.style.display === 'none' ? '' : 'none';
-    editEl.classList.toggle('show');
+    if (editEl) editEl.classList.toggle('show');
 }
-
-/* ── Toggle comments section ── */
 function toggleComments(postId) {
     const section = document.getElementById('comments-section-' + postId);
-    if (section.style.display === 'none') {
-        section.style.display = 'block';
-    } else {
-        section.style.display = 'none';
-    }
+    if (section) section.style.display = section.style.display === 'none' ? 'block' : 'none';
 }
-
-/* ── Toggle reply form ── */
 function toggleReplyForm(commentId) {
-    // Close all other open reply forms first
-    document.querySelectorAll('[id^="reply-form-"]').forEach(el => {
-        if (el.id !== 'reply-form-' + commentId) el.style.display = 'none';
-    });
+    document.querySelectorAll('[id^="reply-form-"]').forEach(el => { if (el.id !== 'reply-form-' + commentId) el.style.display = 'none'; });
     const form = document.getElementById('reply-form-' + commentId);
-    if (form.style.display === 'none') {
-        form.style.display = 'flex';
-        const input = document.getElementById('reply-input-' + commentId);
-        if (input) input.focus();
-    } else {
-        form.style.display = 'none';
-    }
+    if (form.style.display === 'none') { form.style.display = 'flex'; const input = document.getElementById('reply-input-' + commentId); if (input) input.focus(); }
+    else form.style.display = 'none';
 }
-
-/* ── Toggle replies block ── */
 function toggleReplies(commentId) {
     const block  = document.getElementById('replies-block-' + commentId);
     const toggle = document.getElementById('replies-toggle-' + commentId);
-    if (block.style.display === 'none') {
-        block.style.display = 'block';
-        toggle.textContent = toggle.textContent.replace('▶', '▼').replace('Show', 'Hide');
-    } else {
-        block.style.display = 'none';
-        toggle.textContent = toggle.textContent.replace('▼', '▶').replace('Hide', 'Show');
-    }
+    if (block.style.display === 'none') { block.style.display = 'block'; toggle.textContent = toggle.textContent.replace('▶', '▼').replace('Show', 'Hide'); }
+    else { block.style.display = 'none'; toggle.textContent = toggle.textContent.replace('▼', '▶').replace('Hide', 'Show'); }
 }
 
-/* ── Delete confirm modal ── */
-function confirmDelete(postId) {
-    document.getElementById('delete-confirm-' + postId).classList.add('show');
-}
-function hideConfirm(postId) {
-    document.getElementById('delete-confirm-' + postId).classList.remove('show');
-}
+/* ══════════════════════════════════════════════════════════
+   DELETE CONFIRM MODAL
+══════════════════════════════════════════════════════════ */
+function confirmDelete(postId) { document.getElementById('delete-confirm-' + postId).classList.add('show'); }
+function hideConfirm(postId)   { document.getElementById('delete-confirm-' + postId).classList.remove('show'); }
 document.querySelectorAll('.ss-confirm-overlay').forEach(el => {
-    el.addEventListener('click', function(e) {
-        if (e.target === this) this.classList.remove('show');
-    });
+    el.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('show'); });
 });
 
-/* ── Media upload manager ── */
+/* ══════════════════════════════════════════════════════════
+   CREATE POST — media upload manager
+══════════════════════════════════════════════════════════ */
 (function () {
     const grid    = document.getElementById('ss-up-grid');
     const trigger = document.getElementById('ss-up-input');
     const form    = document.getElementById('createPostForm');
     if (!grid || !trigger || !form) return;
-
     let files = [];
-
-function syncInput() {
+    function syncInput() {
         const old = form.querySelector('input.ss-real-files');
         if (old) old.remove();
-
         if (files.length === 0) return;
-
         const dt = new DataTransfer();
         files.forEach(f => dt.items.add(f));
-
         const real = document.createElement('input');
-        real.type      = 'file';
-        real.name      = 'post[mediaFiles][]';
-        real.multiple  = true;
-        real.className = 'ss-real-files';
+        real.type = 'file'; real.name = 'post[mediaFiles][]';
+        real.multiple = true; real.className = 'ss-real-files';
         real.style.display = 'none';
         form.appendChild(real);
-
-        // .files setter is the only way that actually works on submit
         real.files = dt.files;
     }
-
     function render() {
         grid.innerHTML = '';
-
-        if (files.length === 0) {
-            // Empty state + add button side by side
-            const empty = document.createElement('span');
-            empty.className = 'ss-up-empty';
-            empty.textContent = 'No media attached yet.';
-            grid.appendChild(empty);
-        }
-
+        if (files.length === 0) { const e = document.createElement('span'); e.className = 'ss-up-empty'; e.textContent = 'No media attached yet.'; grid.appendChild(e); }
         files.forEach((file, i) => {
-            const thumb = document.createElement('div');
-            thumb.className = 'ss-up-thumb';
-
-            if (file.type.startsWith('image/')) {
-                const img = document.createElement('img');
-                const url = URL.createObjectURL(file);
-                img.src = url;
-                img.onload = () => URL.revokeObjectURL(url);
-                thumb.appendChild(img);
-            } else {
-                const icon = document.createElement('span');
-                icon.className = 'ss-up-vid-icon';
-                icon.textContent = '🎬';
-                thumb.appendChild(icon);
-            }
-
-            const removeBtn = document.createElement('button');
-            removeBtn.type = 'button';
-            removeBtn.className = 'ss-up-remove';
-            removeBtn.title = 'Remove';
-            removeBtn.innerHTML = '&#x2715;';
-            removeBtn.addEventListener('click', () => {
-                files.splice(i, 1);
-                render();
-                syncInput();
-            });
-            thumb.appendChild(removeBtn);
-            grid.appendChild(thumb);
+            const thumb = document.createElement('div'); thumb.className = 'ss-up-thumb';
+            if (file.type.startsWith('image/')) { const img = document.createElement('img'); const url = URL.createObjectURL(file); img.src = url; img.onload = () => URL.revokeObjectURL(url); thumb.appendChild(img); }
+            else { const icon = document.createElement('span'); icon.className = 'ss-up-vid-icon'; icon.textContent = '🎬'; thumb.appendChild(icon); }
+            const removeBtn = document.createElement('button'); removeBtn.type = 'button'; removeBtn.className = 'ss-up-remove';
+            removeBtn.title = 'Remove'; removeBtn.innerHTML = '&#x2715;';
+            removeBtn.addEventListener('click', () => { files.splice(i, 1); render(); syncInput(); });
+            thumb.appendChild(removeBtn); grid.appendChild(thumb);
         });
-
-        // "+" add button — always rendered at the end
-        const addBtn = document.createElement('div');
-        addBtn.className = 'ss-up-add-btn';
-        addBtn.title = 'Add media';
+        const addBtn = document.createElement('div'); addBtn.className = 'ss-up-add-btn'; addBtn.title = 'Add media';
         addBtn.innerHTML = '<span>+</span><span class="ss-up-add-label">Add</span>';
-        addBtn.addEventListener('click', () => {
-            trigger.value = '';
-            trigger.click();
-        });
+        addBtn.addEventListener('click', () => { trigger.value = ''; trigger.click(); });
         grid.appendChild(addBtn);
     }
-
-    trigger.addEventListener('change', () => {
-        Array.from(trigger.files).forEach(f => files.push(f));
-        render();
-        syncInput();
-    });
-
-    render(); // initial state
+    trigger.addEventListener('change', () => { Array.from(trigger.files).forEach(f => files.push(f)); render(); syncInput(); });
+    render();
 })();
-
-/* ── Search filter (client-side highlight) ── */
-document.getElementById('searchInput').addEventListener('input', function() {
-    const q = this.value.toLowerCase().trim();
-    document.querySelectorAll('.ss-post-card').forEach(card => {
-        const text = card.querySelector('.ss-post-content')?.textContent.toLowerCase() ?? '';
-        card.style.display = (!q || text.includes(q)) ? '' : 'none';
-    });
-});
 </script>
 {% endblock %}

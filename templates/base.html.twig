@@ -1,37 +1,155 @@
-{# templates/base.html.twig - Cleaned Safe Space Version #}
+{# templates/base.html.twig - Safe Space #}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Safe Space{% endblock %}</title>
-    
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    
-    <!-- Custom CSS -->
+
     <style>
+        /* ── CSS Variables (shared across all pages) ── */
         :root {
-            --primary: #667eea;
-            --primary-dark: #764ba2;
+            --indigo:       #4f46e5;
+            --violet:       #7c3aed;
+            --indigo-light: #ede9fe;
+            --indigo-mid:   #c4b5fd;
+            --gray-50:  #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --green:  #10b981;
+            --amber:  #f59e0b;
+            --red:    #ef4444;
+            --red-bg: #fee2e2;
+            --radius-card: 16px;
+            --radius-sm:   10px;
+            --radius-xs:   8px;
+            --shadow-card: 0 2px 8px rgba(0,0,0,.05);
+            --shadow-card-hover: 0 4px 14px rgba(79,70,229,.10);
+            --shadow-btn:  0 3px 12px rgba(79,70,229,.4);
         }
-        
+
+        /* ── Base ── */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: {% if app.user %}linear-gradient(135deg, #667eea 0%, #764ba2 100%){% else %}#f0f2f5{% endif %};
+            font-family: 'Segoe UI', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
             min-height: 100vh;
         }
-        
-        /* Auth pages styling */
+
+        /* ── Navbar ── */
+        .ss-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #fff;
+            border-bottom: 1px solid var(--gray-200);
+            box-shadow: 0 2px 8px rgba(0,0,0,.04);
+            padding: 0 24px;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .ss-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        .ss-logo-icon { color: var(--indigo); font-size: 20px; }
+        .ss-logo-text {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--indigo);
+            letter-spacing: -.3px;
+        }
+        .ss-search-wrap {
+            flex: 1;
+            max-width: 380px;
+            position: relative;
+        }
+        .ss-search-wrap .bi-search {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 13px;
+            pointer-events: none;
+        }
+        .ss-search {
+            width: 100%;
+            background: var(--gray-50);
+            border: 1.5px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 9px 14px 9px 38px;
+            font-size: 13.5px;
+            color: var(--gray-900);
+            transition: border-color .2s;
+            outline: none;
+        }
+        .ss-search::placeholder { color: var(--gray-400); }
+        .ss-search:focus { border-color: var(--indigo-mid); background: #fff; }
+
+        .ss-nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+        .ss-avatar {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 15px; color: #fff;
+            cursor: pointer; flex-shrink: 0;
+            text-decoration: none;
+        }
+        .ss-nav-info { line-height: 1.2; }
+        .ss-nav-name { font-weight: 700; font-size: 13.5px; color: var(--gray-900); }
+        .ss-nav-role { font-size: 11px; font-weight: 600; }
+        .ss-nav-role-patient      { color: var(--indigo); }
+        .ss-nav-role-psychiatrist { color: var(--green); }
+        .ss-nav-role-admin        { color: var(--amber); }
+
+        .ss-home-btn {
+            width: 38px; height: 38px;
+            background: var(--gray-100);
+            border: none; border-radius: var(--radius-xs);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gray-500); cursor: pointer;
+            text-decoration: none;
+            transition: background .2s, color .2s;
+        }
+        .ss-home-btn:hover { background: var(--red-bg); color: var(--red); }
+
+        /* ── Main container ── */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ── Auth pages ── */
         .auth-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        
         .auth-card {
             background: white;
             border-radius: 20px;
@@ -41,100 +159,81 @@
             max-width: 500px;
             animation: fadeInUp 0.5s ease-out;
         }
-        
-        /* Main app styling */
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .navbar-custom {
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            padding: 0.75rem 0;
-        }
-        
+
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-        
+
         @media (max-width: 768px) {
-            .auth-card {
-                padding: 20px;
-            }
-            .main-container {
-                padding: 10px;
-            }
+            .auth-card       { padding: 20px; }
+            .main-container  { padding: 10px; }
+            .ss-navbar       { padding: 0 12px; gap: 10px; }
+            .ss-search-wrap  { max-width: 180px; }
+            .ss-nav-info     { display: none; }
         }
     </style>
-    
+
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
     {% if app.user %}
-        {# Authenticated user - Show main navigation #}
-        <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-            <div class="container">
-                <a class="navbar-brand fw-bold text-primary" href="{{ path('app_feed') }}">
-                    <i class="bi bi-heart-fill"></i> Safe Space
+        {# ═══════════════════════════════════ NAVBAR ═══════════════════════════════════ #}
+        {% set u    = app.user %}
+        {% set role = u.role %}
+        {% set avatarBg %}{% if role == 'PSYCHIATRIST' %}background:#10b981{% elseif role == 'ADMIN' %}background:#f59e0b{% else %}background:#4f46e5{% endif %}{% endset %}
+        {% set nameParts = u.fullName|split(' ') %}
+        {% set initials  = nameParts[0]|slice(0,1)|upper ~ (nameParts[1] is defined ? nameParts[1]|slice(0,1)|upper : '') %}
+
+        <nav class="ss-navbar">
+            <a href="{{ path('app_feed') }}" class="ss-logo">
+                <i class="bi bi-shield-fill-check ss-logo-icon"></i>
+                <span class="ss-logo-text">SafeSpace</span>
+            </a>
+
+            <div class="ss-search-wrap">
+                <i class="bi bi-search"></i>
+                <input type="text" class="ss-search" id="searchInput"
+                       placeholder="Search posts…"
+                       value="{{ app.request.query.get('search') ?? '' }}">
+            </div>
+
+            <div class="ss-nav-right">
+                <a href="#" class="ss-avatar" style="{{ avatarBg }}" title="{{ u.fullName }}">
+                    {% if u.profilePicture %}
+                        <img src="{{ u.profilePicture }}" alt="{{ u.fullName }}"
+                             style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+                    {% else %}
+                        {{ initials }}
+                    {% endif %}
                 </a>
-                
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto align-items-center gap-2">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_feed') }}">
-                                <i class="bi bi-house-door"></i> Feed
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
-                                {% if app.user.profilePicture %}
-                                    <img src="{{ app.user.profilePicture }}" class="rounded-circle" width="32" height="32">
-                                {% else %}
-                                    <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                                        <i class="bi bi-person-fill text-white small"></i>
-                                    </div>
-                                {% endif %}
-                                <span>{{ app.user.fullName }}</span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
-                                    <i class="bi bi-box-arrow-right"></i> Logout
-                                </a></li>
-                            </ul>
-                        </li>
-                    </ul>
+                <div class="ss-nav-info">
+                    <div class="ss-nav-name">{{ u.fullName }}</div>
+                    <div class="ss-nav-role ss-nav-role-{{ role|lower }}">{{ role }}</div>
                 </div>
+                <a href="{{ path('app_logout') }}" class="ss-home-btn" title="Logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
             </div>
         </nav>
-        
-        <main class="main-container">
-            {# Flash Messages #}
+
+        {# ═══════════════════════════════════ MAIN ═══════════════════════════════════ #}
+        <main>
+            {# Flash messages #}
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    <div class="alert alert-{{ label }} alert-dismissible fade show m-3" role="alert">
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {% endfor %}
             {% endfor %}
-            
+
             {% block body %}{% endblock %}
         </main>
+
     {% else %}
-        {# Guest user - Show auth layout #}
+        {# ═══════════════════════════════════ GUEST ═══════════════════════════════════ #}
         {% block auth_body %}
             <div class="auth-container">
                 <div class="auth-card">
@@ -143,58 +242,44 @@
             </div>
         {% endblock %}
     {% endif %}
-    
-    <!-- Scripts -->
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/@hotwired/stimulus@3.2.2/dist/stimulus.js"></script>
-    
+
     <script>
-        // Initialize Stimulus
-        const application = Stimulus.Application.start();
-        
-        // Global toast notification function
+        // Global toast notification
         window.showToast = function(message, type = 'success') {
             const toastContainer = document.getElementById('toast-container') || (() => {
                 const container = document.createElement('div');
                 container.id = 'toast-container';
-                container.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999;';
+                container.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;';
                 document.body.appendChild(container);
                 return container;
             })();
-            
             const toast = document.createElement('div');
             toast.className = `alert alert-${type} alert-dismissible fade show`;
-            toast.style.cssText = 'min-width: 250px; animation: slideInRight 0.3s ease-out;';
-            toast.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            
+            toast.style.cssText = 'min-width:250px;';
+            toast.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
             toastContainer.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-            }, 5000);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 5000);
         };
-        
-        // Add animation style
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-        `;
-        document.head.appendChild(style);
+
+        // Search wired up only when fetchPosts exists (i.e. on the feed page)
+        const searchEl = document.getElementById('searchInput');
+        if (searchEl) {
+            let searchTimeout;
+            searchEl.addEventListener('input', function () {
+                clearTimeout(searchTimeout);
+                const q = this.value.trim();
+                searchTimeout = setTimeout(() => {
+                    if (typeof fetchPosts === 'function') {
+                        fetchPosts({ ...getCurrentParams(), search: q });
+                    }
+                }, 400);
+            });
+        }
     </script>
-    
+
     {% block javascripts %}{% endblock %}
 </body>
 </html>
